@@ -10,9 +10,6 @@ info:
   license:
     name: UNLICENSED
 basePath: /
-schemes:
-  - https
-  - http
 consumes:
   - application/json
 produces:
