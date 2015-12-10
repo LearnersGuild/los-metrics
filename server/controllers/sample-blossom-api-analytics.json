@@ -1,0 +1,610 @@
+{
+ "cardMetricsRecentlyShipped": [
+  {
+   "title": "APP_HOSTNAME to APP_BASEURL",
+   "cardInStageMetrics": [
+    {
+     "duration": "990171",
+     "leftAt": "2015-12-02T06:46:40.332620+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "563278",
+     "leftAt": "2015-12-02T06:56:03.609960+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "204607",
+     "leftAt": "2015-12-02T06:59:28.215970+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "pjuy2yeznzaxjig7huidiocvju",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-12-02T06:59:28.215970+00:00"
+  },
+  {
+   "title": "hyphens to camelCase",
+   "cardInStageMetrics": [
+    {
+     "duration": "1220934",
+     "leftAt": "2015-12-02T06:46:29.693700+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "5828",
+     "leftAt": "2015-12-02T06:46:35.521610+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "566806",
+     "leftAt": "2015-12-02T06:56:02.327570+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "onzejqlyvrgw3mbkgbalwybosu",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-12-02T06:56:02.327570+00:00"
+  },
+  {
+   "title": "extract favicon into its own service",
+   "cardInStageMetrics": [
+    {
+     "duration": "2698",
+     "leftAt": "2015-12-02T00:06:17.787640+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "22542987",
+     "leftAt": "2015-12-02T06:22:00.774190+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "1414352",
+     "leftAt": "2015-12-02T06:45:35.125430+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "juuncsvyc5h67hgpn4jyo55pha",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-12-02T06:45:35.125430+00:00"
+  },
+  {
+   "title": "integrate with CircleCI",
+   "cardInStageMetrics": [
+    {
+     "duration": "3464",
+     "leftAt": "2015-11-26T19:50:25.893800+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "102604584",
+     "leftAt": "2015-11-28T00:20:30.477020+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "8991",
+     "leftAt": "2015-11-28T00:20:39.467320+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "ksn4lqwfsfechmoill6dilhlxa",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-28T00:20:39.467320+00:00"
+  },
+  {
+   "title": "add test harness",
+   "cardInStageMetrics": [
+    {
+     "duration": "10031",
+     "leftAt": "2015-11-26T03:16:19.040660+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "162250374",
+     "leftAt": "2015-11-28T00:20:29.414440+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "4748",
+     "leftAt": "2015-11-28T00:20:34.161610+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "742egkugijcgvibl4wtgvqe7pu",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-28T00:20:34.161610+00:00"
+  },
+  {
+   "title": "include favicon sizes",
+   "cardInStageMetrics": [
+    {
+     "duration": "2495",
+     "leftAt": "2015-11-27T18:32:51.789920+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "1235",
+     "leftAt": "2015-11-27T18:32:53.024740+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "32652",
+     "leftAt": "2015-11-27T18:33:25.676020+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "chr7itabvrar3lnljoaqeaquhy",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-27T18:33:25.676020+00:00"
+  },
+  {
+   "title": "ensure Swagger docs are accessible",
+   "cardInStageMetrics": [
+    {
+     "duration": "2890",
+     "leftAt": "2015-11-26T19:55:19.154060+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "76141432",
+     "leftAt": "2015-11-27T17:04:20.585860+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "828130",
+     "leftAt": "2015-11-27T17:18:08.714890+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "wnk4ty7lk5aelltc4seuri6xaq",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-27T17:18:08.714890+00:00"
+  },
+  {
+   "title": "convert to universal app",
+   "cardInStageMetrics": [
+    {
+     "duration": "4478",
+     "leftAt": "2015-11-26T03:16:47.554590+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "14805385",
+     "leftAt": "2015-11-26T07:23:32.939440+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "44803337",
+     "leftAt": "2015-11-26T19:50:16.275960+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "oku3lodz5bdsdeff2viacrzm2a",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-26T19:50:16.275960+00:00"
+  },
+  {
+   "title": "complete project scaffolding",
+   "cardInStageMetrics": [
+    {
+     "duration": "604728353",
+     "leftAt": "2015-11-25T23:58:31.197040+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "0",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "11865895",
+     "leftAt": "2015-11-26T03:16:17.091250+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "4wb7ti2tfjgxvc6u25bzvivfbi",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-26T03:16:17.091250+00:00"
+  }
+ ],
+ "cardMetrics": [
+  {
+   "cardInStageMetrics": [
+    {
+     "duration": "0",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "0",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "0",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "2rdzwumrebhvlnqg3dwrvdproa",
+   "currentStageId": "h2w6tubnqbczbljgh5xvmfdoee",
+   "title": "update swagger API docs"
+  },
+  {
+   "cardInStageMetrics": [
+    {
+     "duration": "0",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "0",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "0",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "56cthg3trfgv7iehort6ltya2q",
+   "currentStageId": "h2w6tubnqbczbljgh5xvmfdoee",
+   "title": "as a user, when I sign-up, my slack account should be automatically created for me"
+  },
+  {
+   "cardInStageMetrics": [
+    {
+     "duration": "0",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "0",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "0",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "xerdsqibhzfqxegc27dyzrt5ee",
+   "currentStageId": "h2w6tubnqbczbljgh5xvmfdoee",
+   "title": "customize swagger docs header"
+  },
+  {
+   "title": "complete project scaffolding",
+   "cardInStageMetrics": [
+    {
+     "duration": "604728353",
+     "leftAt": "2015-11-25T23:58:31.197040+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "0",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "11865895",
+     "leftAt": "2015-11-26T03:16:17.091250+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "4wb7ti2tfjgxvc6u25bzvivfbi",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-26T03:16:17.091250+00:00"
+  },
+  {
+   "title": "add test harness",
+   "cardInStageMetrics": [
+    {
+     "duration": "10031",
+     "leftAt": "2015-11-26T03:16:19.040660+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "162250374",
+     "leftAt": "2015-11-28T00:20:29.414440+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "4748",
+     "leftAt": "2015-11-28T00:20:34.161610+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "742egkugijcgvibl4wtgvqe7pu",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-28T00:20:34.161610+00:00"
+  },
+  {
+   "title": "include favicon sizes",
+   "cardInStageMetrics": [
+    {
+     "duration": "2495",
+     "leftAt": "2015-11-27T18:32:51.789920+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "1235",
+     "leftAt": "2015-11-27T18:32:53.024740+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "32652",
+     "leftAt": "2015-11-27T18:33:25.676020+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "chr7itabvrar3lnljoaqeaquhy",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-27T18:33:25.676020+00:00"
+  },
+  {
+   "title": "extract favicon into its own service",
+   "cardInStageMetrics": [
+    {
+     "duration": "2698",
+     "leftAt": "2015-12-02T00:06:17.787640+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "22542987",
+     "leftAt": "2015-12-02T06:22:00.774190+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "1414352",
+     "leftAt": "2015-12-02T06:45:35.125430+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "juuncsvyc5h67hgpn4jyo55pha",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-12-02T06:45:35.125430+00:00"
+  },
+  {
+   "title": "integrate with CircleCI",
+   "cardInStageMetrics": [
+    {
+     "duration": "3464",
+     "leftAt": "2015-11-26T19:50:25.893800+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "102604584",
+     "leftAt": "2015-11-28T00:20:30.477020+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "8991",
+     "leftAt": "2015-11-28T00:20:39.467320+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "ksn4lqwfsfechmoill6dilhlxa",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-28T00:20:39.467320+00:00"
+  },
+  {
+   "title": "convert to universal app",
+   "cardInStageMetrics": [
+    {
+     "duration": "4478",
+     "leftAt": "2015-11-26T03:16:47.554590+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "14805385",
+     "leftAt": "2015-11-26T07:23:32.939440+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "44803337",
+     "leftAt": "2015-11-26T19:50:16.275960+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "oku3lodz5bdsdeff2viacrzm2a",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-26T19:50:16.275960+00:00"
+  },
+  {
+   "title": "hyphens to camelCase",
+   "cardInStageMetrics": [
+    {
+     "duration": "1220934",
+     "leftAt": "2015-12-02T06:46:29.693700+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "5828",
+     "leftAt": "2015-12-02T06:46:35.521610+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "566806",
+     "leftAt": "2015-12-02T06:56:02.327570+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "onzejqlyvrgw3mbkgbalwybosu",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-12-02T06:56:02.327570+00:00"
+  },
+  {
+   "title": "APP_HOSTNAME to APP_BASEURL",
+   "cardInStageMetrics": [
+    {
+     "duration": "990171",
+     "leftAt": "2015-12-02T06:46:40.332620+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "563278",
+     "leftAt": "2015-12-02T06:56:03.609960+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "204607",
+     "leftAt": "2015-12-02T06:59:28.215970+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "pjuy2yeznzaxjig7huidiocvju",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-12-02T06:59:28.215970+00:00"
+  },
+  {
+   "title": "ensure Swagger docs are accessible",
+   "cardInStageMetrics": [
+    {
+     "duration": "2890",
+     "leftAt": "2015-11-26T19:55:19.154060+00:00",
+     "stageId": "h2w6tubnqbczbljgh5xvmfdoee"
+    },
+    {
+     "duration": "76141432",
+     "leftAt": "2015-11-27T17:04:20.585860+00:00",
+     "stageId": "suzlhi7i45hrda7cb7s7lgmhzy"
+    },
+    {
+     "duration": "828130",
+     "leftAt": "2015-11-27T17:18:08.714890+00:00",
+     "stageId": "e2bcd7ddafgcpl4vsydsoxwq4u"
+    },
+    {
+     "duration": "0",
+     "stageId": "vvfjjcy3ffbgpnqy674mktfzle"
+    }
+   ],
+   "id": "wnk4ty7lk5aelltc4seuri6xaq",
+   "currentStageId": "vvfjjcy3ffbgpnqy674mktfzle",
+   "shippedAt": "2015-11-27T17:18:08.714890+00:00"
+  }
+ ],
+ "stages": [
+  {
+   "status": "DEFAULT",
+   "description": "As-yet unscheduled.",
+   "createdAt": "2015-11-18T23:55:38.520470+00:00",
+   "updatedAt": "2015-11-18T23:56:09.390550+00:00",
+   "position": 4.294967296E9,
+   "descriptionUpdatedAt": "2015-11-18T23:56:09.390490",
+   "id": "h2w6tubnqbczbljgh5xvmfdoee",
+   "descriptionAuthor": "gnppgkdonfhhxetnl6y6iuxn7i",
+   "name": "Backlog"
+  },
+  {
+   "status": "DEFAULT",
+   "description": "Prioritized and approved to be worked on.",
+   "createdAt": "2015-11-18T23:55:38.520620+00:00",
+   "updatedAt": "2015-11-18T23:56:29.619550+00:00",
+   "position": 8.589934592E9,
+   "descriptionUpdatedAt": "2015-11-18T23:56:29.619470",
+   "id": "suzlhi7i45hrda7cb7s7lgmhzy",
+   "descriptionAuthor": "gnppgkdonfhhxetnl6y6iuxn7i",
+   "name": "To-Do"
+  },
+  {
+   "status": "DEFAULT",
+   "description": "Currently being worked on.",
+   "wipLimit": "2",
+   "createdAt": "2015-11-18T23:55:38.520730+00:00",
+   "updatedAt": "2015-12-02T00:17:29.468720+00:00",
+   "position": 1.2884901888E10,
+   "descriptionUpdatedAt": "2015-11-18T23:56:43.658060",
+   "id": "e2bcd7ddafgcpl4vsydsoxwq4u",
+   "descriptionAuthor": "gnppgkdonfhhxetnl6y6iuxn7i",
+   "name": "In-Progress"
+  },
+  {
+   "status": "DEFAULT",
+   "description": "Completed.",
+   "createdAt": "2015-11-18T23:55:38.520840+00:00",
+   "updatedAt": "2015-11-18T23:57:05.652970+00:00",
+   "position": 1.7179869184E10,
+   "descriptionUpdatedAt": "2015-11-18T23:57:05.652910",
+   "id": "vvfjjcy3ffbgpnqy674mktfzle",
+   "descriptionAuthor": "gnppgkdonfhhxetnl6y6iuxn7i",
+   "name": "Done"
+  }
+ ],
+ "shipped": "9",
+ "id": "shu6czxit5ecvnpg2tw6p2fh4q",
+ "kind": "blossom#projectsItem",
+ "etag": "\"nmHkjRy7S3fhgoYQ93MVhtnZjCo/RUKepkE9H8v9nXZzdWXCXxsqkrE\""
+}

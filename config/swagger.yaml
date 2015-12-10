@@ -1,0 +1,96 @@
+swagger: '2.0'
+info:
+  version: 0.1.0
+  title: product-metrics
+  description: Product Metrics
+  termsOfService: 'https://learnersguild.org/legal/terms'
+  contact:
+    name: Jeffrey Wescott
+    email: jeffrey@learnersguild.org
+  license:
+    name: UNLICENSED
+basePath: /
+schemes:
+  - http
+  - https
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /projects/metrics:
+    get:
+      description: Returns the metrics for all projects
+      operationId: getProjectsMetrics
+      produces:
+        - application/json
+      parameters:
+        - name: startDate
+          in: query
+          description: start date for metrics computations
+          required: false
+          type: string
+          format: date-time
+        - name: endDate
+          in: query
+          description: end date for metrics computations
+          required: false
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: projects response
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/project'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/errorModel'
+definitions:
+  project:
+    type: object
+    description: A project with metrics
+    required:
+      - name
+      - metrics
+    properties:
+      name:
+        type: string
+      metrics:
+        type: object
+        $ref: '#/definitions/metrics'
+  metrics:
+    type: object
+    description: Metrics for a given project
+    required:
+      - cycleTime
+      - leadTime
+      - throughput
+      - wip
+    properties:
+      cycleTime:
+        type: number
+        format: float
+      leadTime:
+        type: number
+        format: float
+      throughput:
+        type: number
+        format: int32
+      wip:
+        type: number
+        format: int32
+  errorModel:
+    type: object
+    description: Error information returned by an unsuccessful API call.
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
