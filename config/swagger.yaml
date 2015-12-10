@@ -11,8 +11,8 @@ info:
     name: UNLICENSED
 basePath: /
 schemes:
-  - http
   - https
+  - http
 consumes:
   - application/json
 produces:
