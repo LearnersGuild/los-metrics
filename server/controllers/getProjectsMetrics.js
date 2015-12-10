@@ -89,27 +89,46 @@ function averageCycleDays(cards, stages) {
 function getProjectMetrics(projectConfig, startDate, endDate) {
   return new Promise((resolve) => {
     // Query the blossom API. See `docs/sample-blossom-api-analytics.json` for a sample.
-    const url = 'https://blossom-hr.appspot.com/_ah/api/blossom/0_0_3/projects/' +
+    const analyticsUrl = 'https://blossom-hr.appspot.com/_ah/api/blossom/0_0_3/projects/' +
       `${projectConfig.blossomId}/analytics?accessToken=${projectConfig.accessToken}`
+    const projectUrl = 'https://blossom-hr.appspot.com/_ah/api/blossom/0_0_3/projects/' +
+      `${projectConfig.blossomId}?accessToken=${projectConfig.accessToken}`
 
-    fetch(url)
+
+    fetch(analyticsUrl)
       .then((res) => res.json())
       .then((analyticsData) => {
         const cardsShippedInTimeframe = filterCardsByDate(analyticsData, startDate, endDate)
         const cycleTime = averageCycleDays(cardsShippedInTimeframe, analyticsData.stages)
         const leadTime = averageLeadTimeDays(cardsShippedInTimeframe, analyticsData.stages)
         const throughput = cardsShippedInTimeframe.length
-        const wip = 0
 
-        resolve({
-          name: projectConfig.name,
-          metrics: {
-            cycleTime,
-            leadTime,
-            throughput,
-            wip,
-          },
-        })
+        // get WIP
+        fetch(projectUrl)
+          .then((res2) => res2.json())
+          .then((projectData) => {
+            const stages = projectData.stages
+            const wipStages = _.filter(stages, (stage) => {
+              return _.include(['To-Do', 'In-Progress'], stage.name)
+            })
+            const wip = _.reduce(wipStages, (total, stage) => {
+              if (!stage.cards) {
+                return total
+              }
+              return total + stage.cards.length
+            }, 0)
+            // console.log('wip:', wip)
+
+            resolve({
+              name: projectConfig.name,
+              metrics: {
+                cycleTime,
+                leadTime,
+                throughput,
+                wip,
+              },
+            })
+          })
       })
   })
 }
