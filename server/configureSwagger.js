@@ -3,6 +3,7 @@ import path from 'path'
 import swaggerTools from 'swagger-tools'
 import YAML from 'yamljs'
 import _ from 'lodash'
+import Promise from 'bluebird'
 
 // swaggerRouter configuration
 // const options = {

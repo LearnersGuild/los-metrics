@@ -88,7 +88,7 @@ function averageCycleDays(cards, stages) {
 
 function getProjectMetrics(projectConfig, startDate, endDate) {
   return new Promise((resolve) => {
-    // Query the blossom API. See `sample-blossom-api-analytics.json` for a sample.
+    // Query the blossom API. See `docs/sample-blossom-api-analytics.json` for a sample.
     const url = 'https://blossom-hr.appspot.com/_ah/api/blossom/0_0_3/projects/' +
       `${projectConfig.blossomId}/analytics?accessToken=${projectConfig.accessToken}`
 
