@@ -58,7 +58,6 @@ function averageLeadTimeDays(cards, stages) {
 
   const stageIdsToInclude = stageIdsForStageNames(stages, [
     'Backlog',
-    'To-Do',
     'In-Progress',
   ])
 
@@ -76,7 +75,6 @@ function averageCycleDays(cards, stages) {
   }
 
   const stageIdsToInclude = stageIdsForStageNames(stages, [
-    'To-Do',
     'In-Progress',
   ])
 
@@ -149,14 +147,9 @@ export default function getProjectsMetrics(req, res) {
   // TODO: this should not be hardcoded; waiting on API from Blossom
   const projectsConfig = [
     {
-      name: 'IDM',
+      name: 'Learning OS (__v0)',
       blossomId: 'shu6czxit5ecvnpg2tw6p2fh4q',
       accessToken: 'aiaxztyfk5erzdtfhpous2ywzy',
-    },
-    {
-      name: 'icons',
-      blossomId: 'wq6b222ahndb5flclk533xdsti',
-      accessToken: 'akpd7f3ckvdzpjlhzxcbdabdhi',
     },
   ]
   const allProjectsPromises = _.map(projectsConfig, (projectConfig) => getProjectMetrics(projectConfig, startDate, endDate))
