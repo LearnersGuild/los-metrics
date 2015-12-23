@@ -18,11 +18,12 @@
     "test": "./node_modules/.bin/jest"
   },
   "jest": {
-    "scriptPreprocessor": "<rootDir>/node_modules/jest-css-modules",
+    "scriptPreprocessor": "<rootDir>/config/jest-preprocessor.js",
     "testFileExtensions": [
       "js",
       "jsx"
     ],
+    "testRunner": "<rootDir>/node_modules/jest-cli/src/testRunners/jasmine/jasmine2.js",
     "moduleFileExtensions": [
       "js",
       "json",
@@ -45,11 +46,11 @@
   },
   "homepage": "https://github.com/LearnersGuild/project-metrics#readme",
   "dependencies": {
-    "babel": "^5.8.34",
-    "babel-core": "^5.8.34",
-    "babel-loader": "^5.3.3",
-    "babel-runtime": "^5.8.34",
-    "bluebird": "^3.0.5",
+    "babel-core": "^6.3.21",
+    "babel-loader": "^6.2.0",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-runtime": "^6.3.19",
     "bootstrap": "twbs/bootstrap#v4.0.0-alpha",
     "bootstrap-loader": "0.0.5",
     "css-loader": "^0.23.0",
@@ -78,13 +79,13 @@
     "yamljs": "^0.2.4"
   },
   "devDependencies": {
-    "babel-eslint": "^4.1.3",
-    "babel-plugin-react-transform": "^1.1.1",
+    "babel-eslint": "^4.1.6",
+    "babel-jest": "^6.0.1",
+    "babel-plugin-react-transform": "^2.0.0-beta1",
     "eslint": "^1.7.3",
     "eslint-config-airbnb": "^0.1.0",
     "eslint-plugin-react": "^3.6.3",
-    "jest-cli": "^0.8.0",
-    "jest-css-modules": "^1.0.0",
+    "jest-cli": "^0.8.2",
     "piping": "^0.3.0",
     "react-addons-test-utils": "^0.14.3",
     "react-transform-hmr": "^1.0.1"

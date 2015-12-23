@@ -1,4 +1,3 @@
-import Promise from 'bluebird'
 import _ from 'lodash'
 import fetch from 'node-fetch'
 
@@ -132,7 +131,7 @@ function getProjectMetrics(projectConfig, startDate, endDate) {
 }
 
 
-export default function getProjectsMetrics(req, res) {
+export function getMetrics(req, res) {
   // Pull the start and end date from query parameters. In the case that they
   // are not passed, the date objects will defualt to today's date. If the
   // startDate ends up not being passed, we'll subtract 7 days from the endDate.

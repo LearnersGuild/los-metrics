@@ -1,5 +1,5 @@
 /* eslint-disable no-undef */
-require('babel/register')
+require('babel-core/register')
 
 // CSS modules on server-side in development.
 setupCssModulesRequireHook()
@@ -29,8 +29,8 @@ if (__DEVELOPMENT__) {
   if (require('piping')()) {
     // application logic here
     require('dotenv').load()
-    require('./server')
+    require('./server').start()
   }
 } else {
-  require('./server')
+  require('./server').start()
 }

@@ -38,16 +38,15 @@ module.exports = {
         loader: 'babel',
         exclude: /node_modules/,
         query: {
-          plugins: ['react-transform'],
-          extra: {
-            'react-transform': {
+          plugins: [
+            ['react-transform', {
               transforms: [{
                 transform: 'react-transform-hmr',
                 imports: ['react'],
                 locals: ['module'],
               }],
-            },
-          },
+            }],
+          ],
         },
       },
       {

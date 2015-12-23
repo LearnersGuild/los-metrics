@@ -18,7 +18,8 @@ paths:
   /projects/metrics:
     get:
       description: Returns the metrics for all projects
-      operationId: getProjectsMetrics
+      x-swagger-router-controller: Projects
+      operationId: getMetrics
       produces:
         - application/json
       parameters:
