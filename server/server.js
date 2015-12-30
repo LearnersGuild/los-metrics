@@ -6,6 +6,7 @@ import Express from 'express'
 import serveStatic from 'serve-static'
 
 import configureDevEnvironment from './configureDevEnvironment'
+import configureAuth0 from './configureAuth0'
 import configureSwagger from './configureSwagger'
 import handleRender from './render'
 
@@ -24,7 +25,7 @@ export function start() {
   app.use(serveStatic(path.join(__dirname, '../public')))
 
   return Promise.all([
-    // Swagger middleware
+    configureAuth0(app),
     configureSwagger(app),
   ]).then(() => {
     // Default React application
