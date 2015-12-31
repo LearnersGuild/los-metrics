@@ -1,22 +1,22 @@
 /* eslint-disable no-undef */
 
-jest.dontMock('../Root')
+jest.dontMock('../Home')
 
 import React from 'react'
 import ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 
-const Root = require('../Root').Root
+const Home = require('../Home').default
 
-describe('Root', () => {
+describe('Home', () => {
   // This is admittedly a stupid test, but it's here just to demonstrate
   // best practices around testing.
   it('links to the API docs', () => {
-    const root = TestUtils.renderIntoDocument(
-      <Root />
+    const home = TestUtils.renderIntoDocument(
+      <Home />
     )
-    const rootNode = ReactDOM.findDOMNode(root)
+    const homeNode = ReactDOM.findDOMNode(home)
 
-    expect(rootNode.textContent).toContain('View API Docs')
+    expect(homeNode.textContent).toContain('View API Docs')
   })
 })
