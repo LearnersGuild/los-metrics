@@ -50,7 +50,8 @@ module.exports = {
         loader: ExtractTextPlugin.extract(
           'style',
           'css?modules&importLoaders=2&localIdentName=[name]__[local]__[hash:base64:5]' +
-          '!sass'
+          '!sass' +
+          '!sass-resources'
         ),
       },
       {
@@ -59,4 +60,6 @@ module.exports = {
       },
     ],
   },
+
+  sassResources: './config/sass-resources.scss'
 }

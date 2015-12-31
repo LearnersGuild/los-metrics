@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 require('babel-core/register')
 
+const fs = require('fs')
+const path = require('path')
+
 // CSS modules on server-side in development.
 setupCssModulesRequireHook()
 
@@ -17,8 +20,9 @@ function setupCssModulesRequireHook() {
     extensions: [ '.scss' ],
     generateScopedName: '[name]__[local]__[hash:base64:5]',
     preprocessCss: (css) => {
+      const resourcesScss = fs.readFileSync(path.join(__dirname, '..', 'config', 'sass-resources.scss'))
       const result = sass.renderSync({
-        data: css
+        data: resourcesScss + css
       })
       return result.css
     }
