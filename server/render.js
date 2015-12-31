@@ -52,5 +52,5 @@ export default function handleRender(req, res) {
       return resp.json()
     }).then((tags) => {
       res.send(renderFullPage(tags.join('\n        '), renderedAppHtml, initialState))
-    })
+    }).catch(err => res.status(500).send(`Couldn't fetch favicon info from ${process.env.ICONS_SERVICE_TAGS_API_URL}.`))
 }
