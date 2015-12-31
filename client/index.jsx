@@ -1,7 +1,8 @@
 import React from 'react'
 import { render } from 'react-dom'
 
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 
 import { Router } from 'react-router'
@@ -12,8 +13,11 @@ import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
 
 const initialState = window.__INITIAL_STATE__
+const sessionUser = sessionStorage.currentUser ? JSON.parse(sessionStorage.currentUser) : null
+initialState.auth.currentUser = initialState.auth.currentUser || sessionUser
 
-const store = createStore(rootReducer, initialState)
+const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
+const store = createStoreWithMiddleware(rootReducer, initialState)
 const history = createHistory()
 
 syncReduxAndRouter(history, store)

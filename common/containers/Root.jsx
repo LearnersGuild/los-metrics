@@ -1,20 +1,25 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { pushPath } from 'redux-simple-router'
+
+import { signIn } from '../actions'
+
+import Home from '../components/Home'
+import SignIn from '../components/SignIn'
 
 import styles from './Root.scss'
 
-export class Root extends React.Component {
+export class Root extends Component {
   render() {
+    const content = this.props.auth.currentUser ? (
+      <Home />
+    ) : (
+      <SignIn onSignIn={() => this.props.dispatch(signIn('google-oauth2'))} />
+    )
     return (
       <div className={styles.root}>
         <div className="row">
           <section className={styles.content}>
-            <div className="display-3">Product Metrics</div>
-            <div>
-              <a className={styles.btn} href="/docs/#!/default">View API Docs</a>
-              <a className={styles.btn} onClick={() => this.props.dispatch(pushPath('/example'))}>Example</a>
-            </div>
+            {content}
           </section>
         </div>
       </div>
@@ -22,4 +27,17 @@ export class Root extends React.Component {
   }
 }
 
-export default connect()(Root)
+Root.propTypes = {
+  auth: PropTypes.shape({
+    isSigningIn: PropTypes.bool.isRequired,
+    currentUser: PropTypes.object,
+  })
+}
+
+function select(state) {
+  return {
+    auth: state.auth,
+  }
+}
+
+export default connect(select)(Root)
