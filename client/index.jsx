@@ -1,6 +1,28 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
+import { render } from 'react-dom'
 
-import Root from '../common/containers/Root'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
 
-ReactDOM.render(<Root />, document.getElementById('root'))
+import { Router } from 'react-router'
+import { createHistory } from 'history'
+import { syncReduxAndRouter } from 'redux-simple-router'
+
+import getRoutes from '../common/routes'
+import rootReducer from '../common/reducers'
+
+const initialState = window.__INITIAL_STATE__
+
+const store = createStore(rootReducer, initialState)
+const history = createHistory()
+
+syncReduxAndRouter(history, store)
+
+render(
+  <Provider store={store}>
+    <Router history={history}>
+      {getRoutes(store)}
+    </Router>
+  </Provider>,
+  document.getElementById('root')
+)

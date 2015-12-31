@@ -1,14 +1,22 @@
 /* eslint-disable no-undef */
 
-import React from 'react'
-import ReactDOMServer from 'react-dom/server'
 import fetch from 'node-fetch'
+
+import React from 'react'
+import { renderToString } from 'react-dom/server'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+
+import { RoutingContext, match } from 'react-router'
+
+import getRoutes from '../common/routes'
+import rootReducer from '../common/reducers'
 
 import Root from '../common/containers/Root'
 
 
 function renderFullPage(iconsMetadataTagsHtml, renderedAppHtml, initialState) {
-  const { title } = initialState
+  const title = 'Product Metrics'
   let appCss = ''
   if (!__DEVELOPMENT__) {
     appCss = `<link href="/app.css" media="screen,projection" rel="stylesheet" type="text/css" />`
@@ -41,16 +49,30 @@ function renderFullPage(iconsMetadataTagsHtml, renderedAppHtml, initialState) {
 }
 
 export default function handleRender(req, res) {
-  const initialState = {
-    title: 'Product Metrics'
-  }
-  const renderedAppHtml = ReactDOMServer.renderToString(
-    <Root />
-  )
   fetch(process.env.ICONS_SERVICE_TAGS_API_URL)
     .then((resp) => {
       return resp.json()
     }).then((tags) => {
-      res.send(renderFullPage(tags.join('\n        '), renderedAppHtml, initialState))
-    }).catch(err => res.status(500).send(`Couldn't fetch favicon info from ${process.env.ICONS_SERVICE_TAGS_API_URL}.`))
+      const store = createStore(rootReducer)
+
+      match({ routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
+        // console.log('error:', error, 'redirectLocation:', redirectLocation, 'renderProps:', renderProps)
+        if (error) {
+          throw new Error(error)
+        } else if (redirectLocation) {
+          res.redirect(redirectLocation.pathname + redirectLocation.search)
+        } else if (!renderProps) {
+          res.status(404).send(`<h1>404 - Not Found</h1><p>No such URL: ${req.originalUrl}</p>`)
+        } else {
+          const renderedAppHtml = renderToString(
+            <Provider store={store}>
+              <RoutingContext {...renderProps}/>
+            </Provider>
+          )
+          res.send(renderFullPage(tags.join('\n        '), renderedAppHtml, store.getState()))
+        }
+      })
+    }).catch((error) => {
+      res.status(500).send(`<h1>500 - Internal Server Error</h1><p>${error}</p>`)
+    })
 }
