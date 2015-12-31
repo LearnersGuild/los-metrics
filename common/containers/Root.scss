@@ -1,2 +1,21 @@
 .root {
+  @include make-container();
+}
+
+.content {
+  @include make-col();
+  @include media-breakpoint-up(sm) {
+    @include make-col-span(8);
+    @include make-col-offset(2);
+  }
+  @include media-breakpoint-up(md) {
+    @include make-col-span(6);
+    @include make-col-offset(3);
+  }
+}
+
+.btn {
+  composes: btn from '../../node_modules/bootstrap/scss/_buttons.scss';
+  composes: btn-primary from '../../node_modules/bootstrap/scss/_buttons.scss';
+  margin-right: 0.3rem;
 }
