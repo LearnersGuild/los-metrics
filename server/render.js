@@ -12,8 +12,6 @@ import { RoutingContext, match } from 'react-router'
 import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
 
-import Root from '../common/containers/Root'
-
 
 function renderFullPage(iconsMetadataTagsHtml, renderedAppHtml, initialState) {
   const title = 'Product Metrics'
