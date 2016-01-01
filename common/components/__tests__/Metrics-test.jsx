@@ -36,11 +36,6 @@ describe('Metrics', () => {
     <Metrics metrics={data} />
   )
 
-  it('links to the API docs', () => {
-    const metricsNode = ReactDOM.findDOMNode(metrics)
-    expect(metricsNode.textContent).toContain('View API Docs')
-  })
-
   it('renders the correct number of projects', () => {
     const children = TestUtils.scryRenderedComponentsWithType(metrics, ProjectMetrics)
     expect(children.length).toEqual(data.projects.length)

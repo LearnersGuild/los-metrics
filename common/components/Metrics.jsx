@@ -26,9 +26,6 @@ export default class Metrics extends Component {
             {tableRows}
           </tbody>
         </table>
-        <div>
-          <a className="btn btn-primary" href="/docs/#!/default">View API Docs</a>
-        </div>
       </div>
     )
   }
