@@ -1,19 +1,30 @@
 import React, { Component, PropTypes } from 'react'
 import { connect } from 'react-redux'
 
-import { signIn } from '../actions'
+import signIn from '../actions/signIn'
+import loadMetrics from '../actions/loadMetrics'
 
-import Home from '../components/Home'
+import Metrics from '../components/Metrics'
 import SignIn from '../components/SignIn'
 
 import styles from './Root.scss'
 
+
 export class Root extends Component {
+  componentDidMount() {
+    this.constructor.fetchData(this.props.dispatch)
+  }
+
+  static fetchData(dispatch) {
+    dispatch(loadMetrics())
+  }
+
   render() {
-    const content = this.props.auth.currentUser ? (
-      <Home />
+    const { auth, metrics, dispatch } = this.props
+    const content = auth.currentUser ? (
+      <Metrics metrics={metrics} />
     ) : (
-      <SignIn onSignIn={() => this.props.dispatch(signIn('google-oauth2'))} />
+      <SignIn onSignIn={() => dispatch(signIn('google-oauth2'))} />
     )
     return (
       <div className={styles.root}>
@@ -31,12 +42,17 @@ Root.propTypes = {
   auth: PropTypes.shape({
     isSigningIn: PropTypes.bool.isRequired,
     currentUser: PropTypes.object,
-  })
+  }),
+  metrics: PropTypes.shape({
+    isLoading: PropTypes.bool.isRequired,
+    projects: PropTypes.array,
+  }),
 }
 
 function select(state) {
   return {
     auth: state.auth,
+    metrics: state.metrics,
   }
 }
 

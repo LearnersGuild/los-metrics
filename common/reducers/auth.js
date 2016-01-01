@@ -1,4 +1,4 @@
-import { SIGN_IN_REQUEST, SIGN_IN_SUCCESS, SIGN_IN_FAILURE } from '../actions'
+import { SIGN_IN_REQUEST, SIGN_IN_SUCCESS, SIGN_IN_FAILURE } from '../actions/signIn'
 
 const initialState = {
   currentUser: null,

@@ -17,7 +17,7 @@ function signInFailure(error) {
   return { type: SIGN_IN_FAILURE, error }
 }
 
-export function signIn(connection) {
+export default function signIn(connection) {
   return dispatch => {
     dispatch(signInRequest(connection))
 

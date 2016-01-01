@@ -3,7 +3,6 @@
 jest.dontMock('../SignIn')
 
 import React from 'react'
-import ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 
 const SignIn = require('../SignIn').default

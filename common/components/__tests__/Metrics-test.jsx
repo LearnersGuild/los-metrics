@@ -1,13 +1,14 @@
 /* eslint-disable no-undef */
 
 jest.dontMock('../Metrics')
+jest.dontMock('../ProjectMetrics')
 
 import React from 'react'
 import ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 
 const Metrics = require('../Metrics').default
-const ProjectMetrics = require('../Metrics').ProjectMetrics
+const ProjectMetrics = require('../ProjectMetrics').default
 
 const data = {
   isLoading: false,
@@ -43,20 +44,5 @@ describe('Metrics', () => {
   it('renders the correct number of projects', () => {
     const children = TestUtils.scryRenderedComponentsWithType(metrics, ProjectMetrics)
     expect(children.length).toEqual(data.projects.length)
-  })
-})
-
-describe('ProjectMetrics', () => {
-  const renderer = TestUtils.createRenderer()
-  renderer.render(
-    <ProjectMetrics project={data.projects[0]} />
-  )
-  const projectMetrics = renderer.getRenderOutput()
-
-  it('renders the correctly formatted data', () => {
-    const values = projectMetrics.props.children.map((child) => {
-      return child.props.children
-    })
-    expect(values).toEqual([ 'My Project', 1.23, 4.57, 10, 5 ])
   })
 })

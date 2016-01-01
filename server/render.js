@@ -4,7 +4,8 @@ import fetch from 'isomorphic-fetch'
 
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import { createStore } from 'redux'
+import { createStore, applyMiddleware } from 'redux'
+import thunk from 'redux-thunk'
 import { Provider } from 'react-redux'
 
 import { RoutingContext, match } from 'react-router'
@@ -47,12 +48,22 @@ function renderFullPage(iconsMetadataTagsHtml, renderedAppHtml, initialState) {
     `
 }
 
+function fetchAllComponentData(dispatch, routes) {
+  const funcs = routes.map((route) => {
+    if (route.component && typeof(route.component.fetchData === 'function')) {
+      return route.component.fetchData(dispatch)
+    }
+  })
+  return Promise.all(funcs)
+}
+
 export default function handleRender(req, res) {
   fetch(process.env.ICONS_SERVICE_TAGS_API_URL)
     .then((resp) => {
       return resp.json()
     }).then((tags) => {
-      const store = createStore(rootReducer)
+      const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
+      const store = createStoreWithMiddleware(rootReducer)
 
       match({ routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
         // console.log('error:', error, 'redirectLocation:', redirectLocation, 'renderProps:', renderProps)
@@ -63,12 +74,17 @@ export default function handleRender(req, res) {
         } else if (!renderProps) {
           res.status(404).send(`<h1>404 - Not Found</h1><p>No such URL: ${req.originalUrl}</p>`)
         } else {
-          const renderedAppHtml = renderToString(
-            <Provider store={store}>
-              <RoutingContext {...renderProps}/>
-            </Provider>
-          )
-          res.send(renderFullPage(tags.join('\n        '), renderedAppHtml, store.getState()))
+          fetchAllComponentData(store.dispatch, renderProps.routes)
+            .then(() => {
+              const renderedAppHtml = renderToString(
+                <Provider store={store}>
+                  <RoutingContext {...renderProps}/>
+                </Provider>
+              )
+              res.send(renderFullPage(tags.join('\n        '), renderedAppHtml, store.getState()))
+            }).catch((fetchError) => {
+              throw new Error(fetchError)
+            })
         }
       })
     }).catch((error) => {
