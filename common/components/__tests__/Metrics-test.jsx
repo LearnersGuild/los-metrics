@@ -4,7 +4,6 @@ jest.dontMock('../Metrics')
 jest.dontMock('../ProjectMetrics')
 
 import React from 'react'
-import ReactDOM from 'react-dom'
 import TestUtils from 'react-addons-test-utils'
 
 const Metrics = require('../Metrics').default
