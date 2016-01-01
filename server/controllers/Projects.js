@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import fetch from 'node-fetch'
+import fetch from 'isomorphic-fetch'
 
 
 function filterCardsByDate(analyticsData, startDate, endDate) {
