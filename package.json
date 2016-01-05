@@ -60,6 +60,7 @@
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "express-jwt": "^3.3.0",
+    "express-sslify": "^1.0.1",
     "extract-text-webpack-plugin": "^0.9.1",
     "history": "^1.17.0",
     "isomorphic-fetch": "^2.2.0",
