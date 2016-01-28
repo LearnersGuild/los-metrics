@@ -12,8 +12,9 @@ import { syncReduxAndRouter } from 'redux-simple-router'
 import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
 
-const initialState = window.__INITIAL_STATE__
 const sessionUser = sessionStorage.currentUser ? JSON.parse(sessionStorage.currentUser) : null
+const initialState = window.__INITIAL_STATE__ || {}
+initialState.auth = initialState.auth || {}
 initialState.auth.currentUser = initialState.auth.currentUser || sessionUser
 
 const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
