@@ -21,7 +21,7 @@ export class Root extends Component {
 
   render() {
     const { auth, metrics, dispatch } = this.props
-    const content = auth.currentUser ? (
+    const content = auth.currentUser && auth.currentUser.idToken ? (
       <Metrics metrics={metrics} />
     ) : (
       <SignIn onSignIn={() => dispatch(signIn('google-oauth2'))} />
