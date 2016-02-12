@@ -29,6 +29,14 @@ module.exports = {
       __DEVELOPMENT__: false,
       __DEVTOOLS__: false  // <-------- DISABLE redux-devtools HERE
     }),
+    new webpack.optimize.UglifyJsPlugin({
+      compress: {
+        warnings: false,
+      },
+      output: {
+        comments: false,
+      },
+    }),
   ],
 
   module: {
