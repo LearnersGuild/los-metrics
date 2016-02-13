@@ -94,7 +94,8 @@
     "xo": "^0.12.1"
   },
   "engines": {
-    "node": "5.5.0"
+    "node": "5.5.0",
+    "npm": "3.7.2"
   },
   "xo": {
     "extends": "xo-react",
