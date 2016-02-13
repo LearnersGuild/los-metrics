@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, camelcase */
 import fs from 'fs'
 import path from 'path'
 import fetch from 'isomorphic-fetch'
@@ -42,7 +42,7 @@ function getIssuesForRepo(repoName) {
 }
 
 function getIssuesForRepos(repos) {
-  let promises = repos.map(repo => getIssuesForRepo(repo.cached_repo_name))
+  const promises = repos.map(repo => getIssuesForRepo(repo.cached_repo_name))
   return Promise.all(promises)
 }
 
@@ -57,26 +57,28 @@ function getIssueEvents(issue) {
 }
 
 function getIssuesEvents(issues) {
-  let promises = issues.map(issue => getIssueEvents(issue))
+  const promises = issues.map(issue => getIssueEvents(issue))
   return Promise.all(promises)
 }
 
 function zipReposIssues(repos, reposIssues) {
   let issues = []
-  for (let i in repos) {
-    const repo = repos[i]
-    const repoIssues = reposIssues[i]
-    const repoIssuesData = repoIssues.map(issue => {
-      return {
-        repo_id: repo.repo_id,
-        repo_name: repo.cached_repo_name,
-        id: issue.id,
-        number: issue.number,
-        created_at: issue.created_at,
-        closed_at: issue.closed_at,
-      }
-    })
-    issues = issues.concat(repoIssuesData)
+  for (const i in repos) {
+    if (repos.hasOwnProperty(i)) {
+      const repo = repos[i]
+      const repoIssues = reposIssues[i]
+      const repoIssuesData = repoIssues.map(issue => {
+        return {
+          repo_id: repo.repo_id,
+          repo_name: repo.cached_repo_name,
+          id: issue.id,
+          number: issue.number,
+          created_at: issue.created_at,
+          closed_at: issue.closed_at,
+        }
+      })
+      issues = issues.concat(repoIssuesData)
+    }
   }
   return issues
 }
@@ -125,7 +127,7 @@ async function computeMetricsForRepo(repoName) {
       return sum + issue.cycleTime
     }, 0) / issuesWithMetrics.length
     return {
-      [repoName] : {leadTime, cycleTime},
+      [repoName]: {leadTime, cycleTime},
     }
   } catch (err) {
     console.error('Error:', err)
@@ -140,9 +142,11 @@ async function computeMetrics() {
     const promises = reposToCompute.map(repoName => computeMetricsForRepo(repoName))
     const projectsArray = await Promise.all(promises)
     let projects = {}
-    for (let i in projectsArray) {
-      const project = projectsArray[i]
-      projects = Object.assign({}, projects, project)
+    for (const i in projectsArray) {
+      if (projectsArray.hasOwnProperty(i)) {
+        const project = projectsArray[i]
+        projects = Object.assign({}, projects, project)
+      }
     }
 
     // save the output to a JSON file

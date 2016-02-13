@@ -21,7 +21,7 @@ function startJob() {
     args: [],
   })
 
-  child.on('exit', function (event) {
+  child.on('exit', event => {
     console.log(`${scriptFile} exited after ${event.times} runs.`)
   })
 
