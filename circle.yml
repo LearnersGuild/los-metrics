@@ -1,11 +1,6 @@
 machine:
   node:
-    version: 4.2.1
-
-test:
-  override:
-    - npm run lint
-    - npm test -- --verbose
+    version: 5.5.0
 
 deployment:
   production:
