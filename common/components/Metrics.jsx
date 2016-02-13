@@ -5,6 +5,8 @@ import TableHeader from 'material-ui/lib/table/table-header'
 import TableHeaderColumn from 'material-ui/lib/table/table-header-column'
 import TableRow from 'material-ui/lib/table/table-row'
 import TableBody from 'material-ui/lib/table/table-body'
+import TableFooter from 'material-ui/lib/table/table-footer'
+import TableRowColumn from 'material-ui/lib/table/table-row-column'
 
 import ProjectMetrics from './ProjectMetrics'
 
@@ -14,6 +16,25 @@ export default class Metrics extends Component {
     const tableRows = metrics.projects.map((project, i) => {
       return <ProjectMetrics key={i} project={project} />
     })
+
+    const secondsPerDay = 60 * 60 * 24
+    let meanCycleTime = metrics.projects.reduce((sum, project) => {
+      return sum + project.metrics.cycleTime
+    }, 0) / metrics.projects.length
+    meanCycleTime = Math.round(meanCycleTime / secondsPerDay * 10) / 10
+    let meanLeadTime = metrics.projects.reduce((sum, project) => {
+      return sum + project.metrics.leadTime
+    }, 0) / metrics.projects.length
+    meanLeadTime = Math.round(meanLeadTime / secondsPerDay * 10) / 10
+    const totalThroughput = metrics.projects.reduce((sum, project) => {
+      return sum + project.metrics.throughput
+    }, 0)
+    const totalWip = metrics.projects.reduce((sum, project) => {
+      return sum + project.metrics.wip
+    }, 0)
+    const summaryColStyle = {
+      textAlign: 'left',
+    }
 
     return (
       <div>
@@ -28,9 +49,18 @@ export default class Metrics extends Component {
               <TableHeaderColumn>Work In-Progress<br/> (tasks)</TableHeaderColumn>
             </TableRow>
           </TableHeader>
-          <TableBody>
+          <TableBody stripedRows>
             {tableRows}
           </TableBody>
+          <TableFooter adjustForCheckbox={false}>
+            <TableRow>
+              <TableRowColumn style={{fontWeight: 'bold'}}>Summary</TableRowColumn>
+              <TableRowColumn style={summaryColStyle}>{meanCycleTime}</TableRowColumn>
+              <TableRowColumn>{meanLeadTime}</TableRowColumn>
+              <TableRowColumn>{totalThroughput}</TableRowColumn>
+              <TableRowColumn>{totalWip}</TableRowColumn>
+            </TableRow>
+          </TableFooter>
         </Table>
       </div>
     )

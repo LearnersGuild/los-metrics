@@ -6,8 +6,8 @@ import TestUtils from 'react-addons-test-utils'
 const data = {
   name: 'My Project',
   metrics: {
-    cycleTime: 1.23456,
-    leadTime: 4.56789,
+    cycleTime: 1.23456 * 60 * 60 * 24,
+    leadTime: 4.56789 * 60 * 60 * 24,
     throughput: 10,
     wip: 5,
   }
@@ -29,5 +29,5 @@ test('ProjectMetrics renders the correctly formatted data', t => {
   const values = projectMetrics.props.children.map(child => {
     return child.props.children
   })
-  t.same(values, ['My Project', 1.23, 4.57, 10, 5])
+  t.same(values, ['My Project', 1.2, 4.6, 10, 5])
 })

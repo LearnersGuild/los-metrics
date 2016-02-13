@@ -157,7 +157,8 @@ async function computeMetricsForRepo(repoName) {
     }, 0) / issuesWithMetrics.length
 
     return {
-      [repoName]: {leadTime, cycleTime, wip, throughput: issuesWithMetrics.length},
+      name: repoName,
+      metrics: {leadTime, cycleTime, wip, throughput: issuesWithMetrics.length},
     }
   } catch (err) {
     console.error('Error:', err)
@@ -170,14 +171,7 @@ async function computeMetrics() {
     const reposToCompute = process.env.GITHUB_REPOS.split(',')
     console.log(`Computing metrics for repos: ${reposToCompute}`)
     const promises = reposToCompute.map(repoName => computeMetricsForRepo(repoName))
-    const projectsArray = await Promise.all(promises)
-    let projects = {}
-    for (const i in projectsArray) {
-      if (projectsArray.hasOwnProperty(i)) {
-        const project = projectsArray[i]
-        projects = Object.assign({}, projects, project)
-      }
-    }
+    const projects = await Promise.all(promises)
 
     // save the output to a JSON file
     const dataDir = path.join(__dirname, '..', 'data')

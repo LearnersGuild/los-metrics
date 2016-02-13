@@ -8,8 +8,8 @@ const data = {
   projects: [{
     name: 'My Project',
     metrics: {
-      cycleTime: 1.23456,
-      leadTime: 4.56789,
+      cycleTime: 1.23456 * 60 * 60 * 24,
+      leadTime: 4.56789 * 60 * 60 * 24,
       throughput: 10,
       wip: 5,
     }
