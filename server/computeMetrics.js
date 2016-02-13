@@ -46,6 +46,21 @@ function getIssuesForRepos(repos) {
   return Promise.all(promises)
 }
 
+function getBoardInfo(repoId) {
+  const boardUrl = `https://api.zenhub.io/p1/repositories/${repoId}/board`
+  return fetch(boardUrl, {
+    headers: {
+      'Accept': 'application/json',
+      'x-authentication-token': process.env.ZENHUB_PUBLIC_API_TOKEN,
+    },
+  }).then(resp => resp.json())
+}
+
+function getBoardInfoForRepos(repos) {
+  const promises = repos.map(repo => getBoardInfo(repo.repo_id))
+  return Promise.all(promises)
+}
+
 function getIssueEvents(issue) {
   const issueEventsUrl = `https://api.zenhub.io/p1/repositories/${issue.repo_id}/issues/${issue.number}/events`
   return fetch(issueEventsUrl, {
@@ -102,10 +117,24 @@ function getIssuesMetrics(issuesWithEvents) {
   })
 }
 
+const PIPELINES_NOT_IN_WIP = ['New Issues', 'Backlog', 'To Do', 'Done']
+
 async function computeMetricsForRepo(repoName) {
   try {
     const repo = await getRepo(repoName)
     const repos = await getReposForBoard(repo.id)
+
+    // compute wip
+    console.log(`Computing wip for ${repoName} ...`)
+    const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
+    const wip = reposBoardInfos.reduce((wipSum, boardInfo) => {
+      const boardSum = boardInfo.pipelines.reduce((boardWipSum, pipeline) => {
+        return PIPELINES_NOT_IN_WIP.includes(pipeline.name) ? boardWipSum : boardWipSum + pipeline.issues.length
+      }, 0)
+      return wipSum + boardSum
+    }, 0)
+
+    // compute throughput, leadTime, and cycleTime
     const reposIssues = await getIssuesForRepos(repos.repos)
     reposIssues.forEach((repoIssues, i) => {
       const boardRepo = repos.repos[i]
@@ -126,8 +155,9 @@ async function computeMetricsForRepo(repoName) {
     const cycleTime = issuesWithMetrics.reduce((sum, issue) => {
       return sum + issue.cycleTime
     }, 0) / issuesWithMetrics.length
+
     return {
-      [repoName]: {leadTime, cycleTime},
+      [repoName]: {leadTime, cycleTime, wip, throughput: issuesWithMetrics.length},
     }
   } catch (err) {
     console.error('Error:', err)
