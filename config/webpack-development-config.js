@@ -6,7 +6,6 @@ module.exports = {
   entry: {
     app: [
       'webpack-hot-middleware/client',
-      'bootstrap-loader',
       './client',
     ]
   },

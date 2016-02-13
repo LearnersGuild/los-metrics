@@ -1,11 +1,4 @@
-.root {
-  @include make-container();
-}
-
 .content {
-  @include make-col();
-  @include media-breakpoint-up(sm) {
-    @include make-col-span(8);
-    @include make-col-offset(2);
-  }
+  @include outer-container;
+  font-family: Roboto, sans-serif;
 }

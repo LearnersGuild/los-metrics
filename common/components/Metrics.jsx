@@ -1,5 +1,11 @@
 import React, {Component, PropTypes} from 'react'
 
+import Table from 'material-ui/lib/table/table'
+import TableHeader from 'material-ui/lib/table/table-header'
+import TableHeaderColumn from 'material-ui/lib/table/table-header-column'
+import TableRow from 'material-ui/lib/table/table-row'
+import TableBody from 'material-ui/lib/table/table-body'
+
 import ProjectMetrics from './ProjectMetrics'
 
 export default class Metrics extends Component {
@@ -11,21 +17,21 @@ export default class Metrics extends Component {
 
     return (
       <div>
-        <div className="display-3">Product Metrics</div>
-        <table className="table table-striped">
-          <thead className="thead-inverse">
-            <tr>
-              <th>Project</th>
-              <th>Cycle Time<br/> (days)</th>
-              <th>Lead Time<br/> (days)</th>
-              <th>Throughput<br/> (tasks)</th>
-              <th>Work In-Progress<br/> (tasks)</th>
-            </tr>
-          </thead>
-          <tbody>
+        <h1>Product Metrics</h1>
+        <Table>
+          <TableHeader displaySelectAll={false} adjustForCheckbox={false}>
+            <TableRow>
+              <TableHeaderColumn>Project</TableHeaderColumn>
+              <TableHeaderColumn>Cycle Time<br/> (days)</TableHeaderColumn>
+              <TableHeaderColumn>Lead Time<br/> (days)</TableHeaderColumn>
+              <TableHeaderColumn>Throughput<br/> (tasks)</TableHeaderColumn>
+              <TableHeaderColumn>Work In-Progress<br/> (tasks)</TableHeaderColumn>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {tableRows}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     )
   }

@@ -26,12 +26,10 @@ export class Root extends Component {
       <SignIn onSignIn={() => dispatch(signIn('google-oauth2'))} />
     )
     return (
-      <div className={styles.root}>
-        <div className="row">
-          <section className={styles.content}>
-            {content}
-          </section>
-        </div>
+      <div>
+        <section className={styles.content}>
+          {content}
+        </section>
       </div>
     )
   }
