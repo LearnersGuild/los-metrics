@@ -1,14 +1,11 @@
 /* eslint-disable no-undef */
-
-import fetch from 'isomorphic-fetch'
-
 import React from 'react'
-import { renderToString } from 'react-dom/server'
-import { createStore, applyMiddleware } from 'redux'
+import {renderToString} from 'react-dom/server'
+import {createStore, applyMiddleware} from 'redux'
 import thunk from 'redux-thunk'
-import { Provider } from 'react-redux'
+import {Provider} from 'react-redux'
 
-import { RoutingContext, match } from 'react-router'
+import {RoutingContext, match} from 'react-router'
 
 import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
@@ -50,8 +47,8 @@ function renderFullPage(renderedAppHtml, initialState) {
 }
 
 function fetchAllComponentData(dispatch, routes) {
-  const funcs = routes.map((route) => {
-    if (route.component && typeof(route.component.fetchData === 'function')) {
+  const funcs = routes.map(route => {
+    if (route.component && typeof route.component.fetchData === 'function') {
       return route.component.fetchData(dispatch)
     }
   })
@@ -63,7 +60,7 @@ export default function handleRender(req, res) {
     const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
     const store = createStoreWithMiddleware(rootReducer)
 
-    match({ routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
+    match({routes: getRoutes(store), location: req.originalUrl}, (error, redirectLocation, renderProps) => {
       // console.log('error:', error, 'redirectLocation:', redirectLocation, 'renderProps:', renderProps)
       if (error) {
         throw new Error(error)
@@ -80,7 +77,7 @@ export default function handleRender(req, res) {
               </Provider>
             )
             res.send(renderFullPage(renderedAppHtml, store.getState()))
-          }).catch((fetchError) => {
+          }).catch(fetchError => {
             throw new Error(fetchError)
           })
       }

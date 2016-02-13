@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react'
+import React, {Component, PropTypes} from 'react'
 
 import ProjectMetrics from './ProjectMetrics'
 
 export default class Metrics extends Component {
   render() {
-    const { metrics } = this.props
+    const {metrics} = this.props
     const tableRows = metrics.projects.map((project, i) => {
       return <ProjectMetrics key={i} project={project} />
     })

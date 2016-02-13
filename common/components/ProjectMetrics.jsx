@@ -1,8 +1,8 @@
-import React, { Component, PropTypes } from 'react'
+import React, {Component, PropTypes} from 'react'
 
 export default class ProjectMetrics extends Component {
   render() {
-    const { project } = this.props
+    const {project} = this.props
     return (
       <tr>
         <th ref="name" scope="row">{project.name}</th>

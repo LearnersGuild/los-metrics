@@ -1,10 +1,9 @@
 import _ from 'lodash'
 import fetch from 'isomorphic-fetch'
 
-
 function filterCardsByDate(analyticsData, startDate, endDate) {
   const recentlyShipped = analyticsData.cardMetricsRecentlyShipped
-  const cardsToInclude = _.filter(recentlyShipped, (card) => {
+  const cardsToInclude = _.filter(recentlyShipped, card => {
     const shippedAt = new Date(card.shippedAt)
     return (shippedAt >= startDate && shippedAt < endDate)
   })
@@ -15,7 +14,7 @@ function filterCardsByDate(analyticsData, startDate, endDate) {
 
 function stageIdsForStageNames(stages, stageNames) {
   const stageIds = _.pluck(
-    _.filter(stages, (stage) => {
+    _.filter(stages, stage => {
       return _.include(stageNames, stage.name)
     }),
     'id'
@@ -84,17 +83,16 @@ function averageCycleDays(cards, stages) {
 }
 
 function getProjectMetrics(projectConfig, startDate, endDate) {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
     // Query the blossom API. See `docs/sample-blossom-api-analytics.json` for a sample.
     const analyticsUrl = 'https://blossom-hr.appspot.com/_ah/api/blossom/0_0_3/projects/' +
       `${projectConfig.blossomId}/analytics?accessToken=${projectConfig.accessToken}`
     const projectUrl = 'https://blossom-hr.appspot.com/_ah/api/blossom/0_0_3/projects/' +
       `${projectConfig.blossomId}?accessToken=${projectConfig.accessToken}`
 
-
     fetch(analyticsUrl)
-      .then((res) => res.json())
-      .then((analyticsData) => {
+      .then(res => res.json())
+      .then(analyticsData => {
         const cardsShippedInTimeframe = filterCardsByDate(analyticsData, startDate, endDate)
         const cycleTime = averageCycleDays(cardsShippedInTimeframe, analyticsData.stages)
         const leadTime = averageLeadTimeDays(cardsShippedInTimeframe, analyticsData.stages)
@@ -102,10 +100,10 @@ function getProjectMetrics(projectConfig, startDate, endDate) {
 
         // get WIP
         fetch(projectUrl)
-          .then((res2) => res2.json())
-          .then((projectData) => {
+          .then(res2 => res2.json())
+          .then(projectData => {
             const stages = projectData.stages
-            const wipStages = _.filter(stages, (stage) => {
+            const wipStages = _.filter(stages, stage => {
               return _.include(['To-Do', 'In-Progress'], stage.name)
             })
             const wip = _.reduce(wipStages, (total, stage) => {
@@ -130,12 +128,11 @@ function getProjectMetrics(projectConfig, startDate, endDate) {
   })
 }
 
-
 export function getMetrics(req, res) {
   // Pull the start and end date from query parameters. In the case that they
   // are not passed, the date objects will defualt to today's date. If the
   // startDate ends up not being passed, we'll subtract 7 days from the endDate.
-  let { startDate, endDate } = req.query
+  let {startDate, endDate} = req.query
   startDate = startDate ? new Date(startDate) : new Date()
   endDate = endDate ? new Date(endDate) : new Date()
   if (!req.query.startDate) {
@@ -151,9 +148,9 @@ export function getMetrics(req, res) {
       accessToken: 'aiaxztyfk5erzdtfhpous2ywzy',
     },
   ]
-  const allProjectsPromises = _.map(projectsConfig, (projectConfig) => getProjectMetrics(projectConfig, startDate, endDate))
+  const allProjectsPromises = _.map(projectsConfig, projectConfig => getProjectMetrics(projectConfig, startDate, endDate))
   Promise.all(allProjectsPromises)
-    .then((projectsMetrics) => {
+    .then(projectsMetrics => {
       res.status(200).json(projectsMetrics)
     })
 }

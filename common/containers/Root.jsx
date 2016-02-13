@@ -1,5 +1,5 @@
-import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
+import React, {Component, PropTypes} from 'react'
+import {connect} from 'react-redux'
 
 import signIn from '../actions/signIn'
 import loadMetrics from '../actions/loadMetrics'
@@ -8,7 +8,6 @@ import Metrics from '../components/Metrics'
 import SignIn from '../components/SignIn'
 
 import styles from './Root.scss'
-
 
 export class Root extends Component {
   componentDidMount() {
@@ -20,7 +19,7 @@ export class Root extends Component {
   }
 
   render() {
-    const { auth, metrics, dispatch } = this.props
+    const {auth, metrics, dispatch} = this.props
     const content = auth.currentUser && auth.currentUser.idToken ? (
       <Metrics metrics={metrics} />
     ) : (
@@ -47,6 +46,7 @@ Root.propTypes = {
     isLoading: PropTypes.bool.isRequired,
     projects: PropTypes.array,
   }),
+  dispatch: PropTypes.func.isRequired,
 }
 
 function select(state) {

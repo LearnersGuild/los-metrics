@@ -25,9 +25,9 @@ describe('ProjectMetrics', () => {
   const projectMetrics = renderer.getRenderOutput()
 
   it('renders the correctly formatted data', () => {
-    const values = projectMetrics.props.children.map((child) => {
+    const values = projectMetrics.props.children.map(child => {
       return child.props.children
     })
-    expect(values).toEqual([ 'My Project', 1.23, 4.57, 10, 5 ])
+    expect(values).toEqual(['My Project', 1.23, 4.57, 10, 5])
   })
 })

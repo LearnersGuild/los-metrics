@@ -18,7 +18,7 @@ module.exports = {
 
   devtool: '#cheap-module-eval-source-map',
 
-  resolve: { extensions: [ '', '.js', '.jsx' ] },
+  resolve: {extensions: ['', '.js', '.jsx']},
 
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
@@ -71,7 +71,7 @@ module.exports = {
       },
       {
         test: /\.(woff2?|ttf|eot|svg)$/,
-        loaders: [ 'url?limit=10000' ],
+        loaders: ['url?limit=10000'],
       },
     ],
   },

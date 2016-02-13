@@ -6,15 +6,15 @@ export const SIGN_IN_SUCCESS = 'SIGN_IN_SUCCESS'
 export const SIGN_IN_FAILURE = 'SIGN_IN_FAILURE'
 
 function signInRequest(connection) {
-  return { type: SIGN_IN_REQUEST, connection }
+  return {type: SIGN_IN_REQUEST, connection}
 }
 
 function signInSuccess(user) {
-  return { type: SIGN_IN_SUCCESS, user }
+  return {type: SIGN_IN_SUCCESS, user}
 }
 
 function signInFailure(error) {
-  return { type: SIGN_IN_FAILURE, error }
+  return {type: SIGN_IN_FAILURE, error}
 }
 
 export default function signIn(connection) {
@@ -27,11 +27,11 @@ export default function signIn(connection) {
         callbackOnLocationHash: true,
         clientID: 'k9dzsGQ9h8x7TcB3JjSBdIKL32I6Fkgb', // TODO: use environment
       })
-      auth0.login({ connection, popup: true }, (err, profile, idToken, accessToken, state) => {
+      auth0.login({connection, popup: true}, (err, profile, idToken, accessToken, state) => {
         if (err) {
           dispatch(signInFailure(`Error signing-in: ${err.message}`))
         }
-        const user = { profile, idToken, accessToken, state }
+        const user = {profile, idToken, accessToken, state}
         dispatch(signInSuccess(user))
       })
     } else {

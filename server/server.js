@@ -23,7 +23,7 @@ export function start() {
 
   // Ensure secure connection in production.
   if (process.env.NODE_ENV === 'production') {
-    app.use(enforceSecure.HTTPS({ trustProtoHeader: true }))
+    app.use(enforceSecure.HTTPS({trustProtoHeader: true}))
   }
 
   // Use this middleware to server up static files
@@ -37,7 +37,7 @@ export function start() {
     // Default React application
     app.get('/', handleRender)
 
-    return app.listen(serverPort, (error) => {
+    return app.listen(serverPort, error => {
       if (error) {
         console.error(error)
       } else {
