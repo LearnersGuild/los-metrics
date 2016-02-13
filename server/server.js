@@ -6,14 +6,33 @@ import Express from 'express'
 import serveStatic from 'serve-static'
 import enforceSecure from 'express-sslify'
 
+import {Monitor} from 'forever-monitor'
+
 import configureDevEnvironment from './configureDevEnvironment'
 import configureAuth0 from './configureAuth0'
 import configureSwagger from './configureSwagger'
 import handleRender from './render'
 
+function startJob() {
+  const scriptFile = path.join(__dirname, 'configureScheduler.babel.js')
+  const child = new Monitor(scriptFile, {
+    max: 3,
+    silent: false,
+    args: [],
+  })
+
+  child.on('exit', function (event) {
+    console.log(`${scriptFile} exited after ${event.times} runs.`)
+  })
+
+  child.start()
+}
+
 export function start() {
   const serverPort = parseInt(process.env.PORT, 10)
   const baseUrl = process.env.APP_BASEURL || `http://localhost:${serverPort}`
+
+  startJob()
 
   const app = new Express()
 
