@@ -178,7 +178,7 @@ async function computeMetrics() {
     const dataFile = path.join(dataDir, 'projects.json')
     console.log(`Writing data to ${dataFile} ...`)
     await mkdirp(dataDir)
-    await fs.writeFile(dataFile, JSON.stringify(projects))
+    fs.writeFileSync(dataFile, JSON.stringify(projects))
     console.log('Done!')
   } catch (err) {
     console.error('Error:', err)
