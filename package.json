@@ -12,9 +12,10 @@
     "email": "jeffrey@learnersguild.org"
   },
   "scripts": {
-    "build": "mkdir -p dist && webpack --config config/webpack-$NODE_ENV-config.js",
-    "lint": "./node_modules/.bin/eslint --ext .js,.jsx .",
-    "start": "npm run build & node server",
+    "build": "mkdir -p dist && webpack --config config/webpack-production-config.js",
+    "icons:fetch": "mkdir -p dist && curl -s https://icons.learnersguild.org/tags > dist/icons-metadata.json",
+    "start": "npm run icons:fetch & node server",
+    "postinstall": "npm run build",
     "test": "./node_modules/.bin/jest"
   },
   "jest": {

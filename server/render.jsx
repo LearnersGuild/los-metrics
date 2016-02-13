@@ -12,9 +12,10 @@ import { RoutingContext, match } from 'react-router'
 
 import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
+import iconsMetadata from '../dist/icons-metadata'
 
 
-function renderFullPage(iconsMetadataTagsHtml, renderedAppHtml, initialState) {
+function renderFullPage(renderedAppHtml, initialState) {
   const title = 'Product Metrics'
   let appCss = ''
   if (!__DEVELOPMENT__) {
@@ -32,7 +33,7 @@ function renderFullPage(iconsMetadataTagsHtml, renderedAppHtml, initialState) {
         <meta name="description" content="Identity Management" />
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 
-        ${iconsMetadataTagsHtml}
+        ${iconsMetadata.join('\n        ')}
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" />
         ${appCss}
       </head>
@@ -58,36 +59,33 @@ function fetchAllComponentData(dispatch, routes) {
 }
 
 export default function handleRender(req, res) {
-  fetch(process.env.ICONS_SERVICE_TAGS_API_URL)
-    .then((resp) => {
-      return resp.json()
-    }).then((tags) => {
-      const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
-      const store = createStoreWithMiddleware(rootReducer)
+  try {
+    const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
+    const store = createStoreWithMiddleware(rootReducer)
 
-      match({ routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
-        // console.log('error:', error, 'redirectLocation:', redirectLocation, 'renderProps:', renderProps)
-        if (error) {
-          throw new Error(error)
-        } else if (redirectLocation) {
-          res.redirect(redirectLocation.pathname + redirectLocation.search)
-        } else if (!renderProps) {
-          res.status(404).send(`<h1>404 - Not Found</h1><p>No such URL: ${req.originalUrl}</p>`)
-        } else {
-          fetchAllComponentData(store.dispatch, renderProps.routes)
-            .then(() => {
-              const renderedAppHtml = renderToString(
-                <Provider store={store}>
-                  <RoutingContext {...renderProps}/>
-                </Provider>
-              )
-              res.send(renderFullPage(tags.join('\n        '), renderedAppHtml, store.getState()))
-            }).catch((fetchError) => {
-              throw new Error(fetchError)
-            })
-        }
-      })
-    }).catch((error) => {
-      res.status(500).send(`<h1>500 - Internal Server Error</h1><p>${error}</p>`)
+    match({ routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
+      // console.log('error:', error, 'redirectLocation:', redirectLocation, 'renderProps:', renderProps)
+      if (error) {
+        throw new Error(error)
+      } else if (redirectLocation) {
+        res.redirect(redirectLocation.pathname + redirectLocation.search)
+      } else if (!renderProps) {
+        res.status(404).send(`<h1>404 - Not Found</h1><p>No such URL: ${req.originalUrl}</p>`)
+      } else {
+        fetchAllComponentData(store.dispatch, renderProps.routes)
+          .then(() => {
+            const renderedAppHtml = renderToString(
+              <Provider store={store}>
+                <RoutingContext {...renderProps}/>
+              </Provider>
+            )
+            res.send(renderFullPage(renderedAppHtml, store.getState()))
+          }).catch((fetchError) => {
+            throw new Error(fetchError)
+          })
+      }
     })
+  } catch (error) {
+    res.status(500).send(`<h1>500 - Internal Server Error</h1><p>${error}</p>`)
+  }
 }
