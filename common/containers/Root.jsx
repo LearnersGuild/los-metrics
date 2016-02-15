@@ -1,35 +1,44 @@
 import React, {Component, PropTypes} from 'react'
 import {connect} from 'react-redux'
 
-import signIn from '../actions/signIn'
-import loadMetrics from '../actions/loadMetrics'
+import Snackbar from 'material-ui/lib/snackbar'
 
-import Metrics from '../components/Metrics'
+import clearErrors from '../actions/clearErrors'
+import signIn from '../actions/signIn'
+
 import SignIn from '../components/SignIn'
+import Metrics from './Metrics'
 
 import styles from './Root.scss'
 
 export class Root extends Component {
-  componentDidMount() {
-    this.constructor.fetchData(this.props.dispatch)
-  }
-
-  static fetchData(dispatch) {
-    dispatch(loadMetrics())
+  handleErrorClose() {
+    const {dispatch} = this.props
+    dispatch(clearErrors())
   }
 
   render() {
-    const {auth, metrics, dispatch} = this.props
+    const {auth, errors, dispatch} = this.props
     const content = auth.currentUser && auth.currentUser.idToken ? (
-      <Metrics metrics={metrics} />
+      <Metrics />
     ) : (
       <SignIn onSignIn={() => dispatch(signIn('google-oauth2'))} />
     )
+    const errorBar = errors.message ? (
+      <Snackbar
+        open={Boolean(errors.message)}
+        message={errors.message}
+        onRequestClose={this.handleErrorClose.bind(this)}
+        autoHideDuration={5000}
+        />
+    ) : ''
+
     return (
       <div>
         <section className={styles.content}>
           {content}
         </section>
+        {errorBar}
       </div>
     )
   }
@@ -40,18 +49,17 @@ Root.propTypes = {
     isSigningIn: PropTypes.bool.isRequired,
     currentUser: PropTypes.object,
   }),
-  metrics: PropTypes.shape({
-    isLoading: PropTypes.bool.isRequired,
-    projects: PropTypes.array,
+  errors: PropTypes.shape({
+    message: PropTypes.string,
   }),
   dispatch: PropTypes.func.isRequired,
 }
 
-function select(state) {
+function mapStateToProps(state) {
   return {
     auth: state.auth,
-    metrics: state.metrics,
+    errors: state.errors,
   }
 }
 
-export default connect(select)(Root)
+export default connect(mapStateToProps)(Root)
