@@ -59,6 +59,8 @@ export default function handleRender(req, res) {
   try {
     const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
     const store = createStoreWithMiddleware(rootReducer)
+    // This is terrible. See: https://github.com/callemall/material-ui/pull/2172
+    global.navigator = {userAgent: req.headers['user-agent']}
 
     match({routes: getRoutes(store), location: req.originalUrl}, (error, redirectLocation, renderProps) => {
       // console.log('error:', error, 'redirectLocation:', redirectLocation, 'renderProps:', renderProps)
@@ -78,7 +80,8 @@ export default function handleRender(req, res) {
             )
             res.send(renderFullPage(renderedAppHtml, store.getState()))
           }).catch(fetchError => {
-            throw new Error(fetchError)
+            // throw new Error(fetchError)  // TODO: this doesn't work!
+            res.status(500).send(`<h1>500 - Internal Server Error</h1><p>${fetchError}</p>`)
           })
       }
     })
