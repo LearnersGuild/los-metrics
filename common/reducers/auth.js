@@ -1,5 +1,6 @@
 /* global sessionStorage */
 import {SIGN_IN_REQUEST, SIGN_IN_SUCCESS, SIGN_IN_FAILURE} from '../actions/signIn'
+import {LOAD_METRICS_UNAUTHORIZED} from '../actions/loadMetrics'
 
 const initialState = {
   currentUser: null,
@@ -20,6 +21,13 @@ export function auth(state = initialState, action) {
       })
     case SIGN_IN_FAILURE:
       console.error('Sign-in FAILURE:', action.error)
+      delete sessionStorage.currentUser
+      return Object.assign({}, state, {
+        currentUser: null,
+        isSigningIn: false,
+      })
+    case LOAD_METRICS_UNAUTHORIZED:
+      console.error('Unauthorized:', action.error)
       delete sessionStorage.currentUser
       return Object.assign({}, state, {
         currentUser: null,

@@ -15,7 +15,7 @@ export default class Metrics extends Component {
   render() {
     const {metrics} = this.props
     let content = <CircularProgress size={2} />
-    if (!metrics.isLoading) {
+    if (!metrics.isLoading && metrics.projects && metrics.projects.length) {
       const tableRows = metrics.projects.map((project, i) => {
         return <ProjectMetrics key={i} project={project} />
       })
