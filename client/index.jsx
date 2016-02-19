@@ -1,8 +1,8 @@
-/* global sessionStorage, window, document */
+/* global window, document */
 import React from 'react'
 import {render} from 'react-dom'
 
-import {createStore, applyMiddleware} from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import thunk from 'redux-thunk'
 import {Provider} from 'react-redux'
 
@@ -13,13 +13,11 @@ import {syncHistory} from 'react-router-redux'
 import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
 
-const sessionUser = sessionStorage.currentUser ? JSON.parse(sessionStorage.currentUser) : null
-const initialState = window.__INITIAL_STATE__ || {}
-initialState.auth = initialState.auth || {}
-initialState.auth.currentUser = initialState.auth.currentUser || sessionUser
+const initialState = window.__INITIAL_STATE__
 
-const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
-const store = createStoreWithMiddleware(rootReducer, initialState)
+const store = createStore(rootReducer, initialState, compose(
+  applyMiddleware(thunk),
+))
 const history = createHistory()
 
 syncHistory(history, store)

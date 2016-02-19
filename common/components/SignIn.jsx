@@ -1,4 +1,4 @@
-import React, {Component, PropTypes} from 'react'
+import React, {Component} from 'react'
 
 import RaisedButton from 'material-ui/lib/raised-button'
 import FontIcon from 'material-ui/lib/font-icon'
@@ -19,8 +19,8 @@ export default class SignIn extends Component {
         <RaisedButton
           ref="signInButton"
           label="Sign-in Using Google"
-          href="https://github.com/callemall/material-ui"
-          onClick={this.props.onSignIn}
+          href="/auth/google"
+          linkButton
           primary
           style={styles.button}
           icon={<FontIcon className="fa fa-google"/>}
@@ -28,8 +28,4 @@ export default class SignIn extends Component {
       </div>
     )
   }
-}
-
-SignIn.propTypes = {
-  onSignIn: PropTypes.func.isRequired,
 }

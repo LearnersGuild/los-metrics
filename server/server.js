@@ -5,6 +5,7 @@ import path from 'path'
 import Express from 'express'
 import serveStatic from 'serve-static'
 import enforceSecure from 'express-sslify'
+import cookieParser from 'cookie-parser'
 
 import {Monitor} from 'forever-monitor'
 
@@ -39,6 +40,9 @@ export function start() {
   if (__DEVELOPMENT__) {
     configureDevEnvironment(app)
   }
+
+  // Parse cookies.
+  app.use(cookieParser())
 
   // Ensure secure connection in production.
   if (process.env.NODE_ENV === 'production') {

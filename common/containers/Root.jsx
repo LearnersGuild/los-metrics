@@ -4,7 +4,6 @@ import {connect} from 'react-redux'
 import Snackbar from 'material-ui/lib/snackbar'
 
 import clearErrors from '../actions/clearErrors'
-import signIn from '../actions/signIn'
 
 import SignIn from '../components/SignIn'
 import Metrics from './Metrics'
@@ -18,11 +17,11 @@ export class Root extends Component {
   }
 
   render() {
-    const {auth, errors, dispatch} = this.props
+    const {auth, errors} = this.props
     const content = auth.currentUser && auth.currentUser.idToken ? (
       <Metrics />
     ) : (
-      <SignIn onSignIn={() => dispatch(signIn('google-oauth2'))} />
+      <SignIn />
     )
     const errorBar = errors.message ? (
       <Snackbar

@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from 'react'
 import {renderToString} from 'react-dom/server'
-import {createStore, applyMiddleware} from 'redux'
+import {createStore, applyMiddleware, compose} from 'redux'
 import thunk from 'redux-thunk'
 import {Provider} from 'react-redux'
 
@@ -57,8 +57,16 @@ function fetchAllComponentData(dispatch, routes) {
 
 export default function handleRender(req, res) {
   try {
-    const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
-    const store = createStoreWithMiddleware(rootReducer)
+    // console.log('user:', req.user)
+    const initialState = {
+      auth: {
+        isSigningIn: false,
+        currentUser: req.user,
+      }
+    }
+    const store = createStore(rootReducer, initialState, compose(
+      applyMiddleware(thunk),
+    ))
     // This is terrible. See: https://github.com/callemall/material-ui/pull/2172
     global.navigator = {userAgent: req.headers['user-agent']}
 
