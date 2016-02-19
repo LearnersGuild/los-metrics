@@ -1,6 +1,6 @@
 import {combineReducers} from 'redux'
 
-import {routeReducer} from 'redux-simple-router'
+import {routeReducer} from 'react-router-redux'
 
 import {auth} from './auth'
 import {errors} from './errors'

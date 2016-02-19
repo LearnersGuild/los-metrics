@@ -8,7 +8,7 @@ import {Provider} from 'react-redux'
 
 import {Router} from 'react-router'
 import {createHistory} from 'history'
-import {syncReduxAndRouter} from 'redux-simple-router'
+import {syncHistory} from 'react-router-redux'
 
 import getRoutes from '../common/routes'
 import rootReducer from '../common/reducers'
@@ -22,7 +22,7 @@ const createStoreWithMiddleware = applyMiddleware(thunk)(createStore)
 const store = createStoreWithMiddleware(rootReducer, initialState)
 const history = createHistory()
 
-syncReduxAndRouter(history, store)
+syncHistory(history, store)
 
 render(
   <Provider store={store}>
