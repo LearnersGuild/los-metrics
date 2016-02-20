@@ -9,6 +9,10 @@ dependencies:
   override:
     - nvm use v5.6 && npm install
 
+test:
+  override:
+    - nvm use v5.6 && npm test
+
 deployment:
   production:
     branch: master
