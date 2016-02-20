@@ -3,11 +3,12 @@ machine:
     version: 5.6.0
 
 dependencies:
-  override:
+  pre:
     - echo $NPM_AUTH_TOKEN
     - echo "@learnersguild:registry=https://registry.npmjs.org/" > ~/.npmrc
     - echo "//registry.npmjs.org/:_authToken=\${NPM_AUTH_TOKEN}" >> ~/.npmrc
-    - /home/ubuntu/nvm/versions/node/v5.6.0/bin/npm install
+  override:
+    - nvm use v5.6 && npm install
 
 deployment:
   production:
