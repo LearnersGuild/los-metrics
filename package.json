@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/LearnersGuild/project-metrics#readme",
   "dependencies": {
-    "@learnersguild/lg-auth0-node-jwt-cookie": "^0.1.0",
+    "@learnersguild/lg-auth0-node-jwt-cookie": "^0.1.1",
     "babel-core": "^6.3.21",
     "babel-loader": "^6.2.3",
     "babel-plugin-add-module-exports": "^0.1.2",
