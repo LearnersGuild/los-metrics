@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser'
 
 import {Monitor} from 'forever-monitor'
 
-import configureAuth0 from '@learnersguild/lg-auth0-node-jwt-cookie'
+import configureAuth0 from '@learnersguild/passport-auth0-jwt-cookie'
 
 import configureDevEnvironment from './configureDevEnvironment'
 import configureSwagger from './configureSwagger'
