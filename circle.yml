@@ -3,9 +3,14 @@ machine:
     version: 5.6.0
 
 dependencies:
-  - echo $NPM_AUTH_TOKEN
-  - echo "//registry.npmjs.org/:_authToken=\${NPM_AUTH_TOKEN}" > ~/.npmrc
-  - npm install
+  pre:
+    - echo $NPM_AUTH_TOKEN
+    - echo "//registry.npmjs.org/:_authToken=\${NPM_AUTH_TOKEN}" > ~/.npmrc
+  override:
+    - echo $NPM_AUTH_TOKEN
+    - which npm
+    - which node
+    - npm install
 
 deployment:
   production:
