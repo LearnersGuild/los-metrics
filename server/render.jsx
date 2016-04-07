@@ -60,7 +60,8 @@ export default function handleRender(req, res) {
     // console.log('user:', req.user)
     const initialState = {
       auth: {
-        isSigningIn: false,
+        isBusy: false,
+        lgJWT: req.lgJWT,
         currentUser: req.user,
       }
     }

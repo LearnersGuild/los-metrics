@@ -24,11 +24,11 @@ function loadMetricsFailure(error) {
 export default function loadMetrics() {
   return (dispatch, getState) => {
     const {auth} = getState()
-    if (auth.currentUser && auth.currentUser.idToken) {
+    if (auth.currentUser && auth.lgJWT) {
       dispatch(loadMetricsRequest())
       fetch('/projects/metrics', {
         headers: {
-          Authorization: `Bearer ${auth.currentUser.idToken}`
+          Authorization: `Bearer ${auth.lgJWT}`
         },
       }).then(resp => {
         if (resp.status >= 200 && resp.status < 300) {

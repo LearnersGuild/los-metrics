@@ -9,9 +9,8 @@ import cookieParser from 'cookie-parser'
 
 import {Monitor} from 'forever-monitor'
 
-import configureAuth0 from '@learnersguild/passport-auth0-jwt-cookie'
-
 import configureDevEnvironment from './configureDevEnvironment'
+import configureAuth from './configureAuth'
 import configureSwagger from './configureSwagger'
 import handleRender from './render'
 
@@ -55,19 +54,7 @@ export function start() {
   app.use(serveStatic(path.join(__dirname, '../public')))
 
   return Promise.all([
-    configureAuth0(app, {
-      domain: 'learnersguild.auth0.com',
-      clientID: process.env.AUTH0_CLIENT_ID,
-      clientSecret: process.env.AUTH0_CLIENT_SECRET,
-      authURL: '/auth/google',
-      callbackURL: '/auth/callback',
-      jwtIgnorePaths: [
-        '/',          // home page
-        '/api-docs',  // swagger integration
-        /^\/docs\//,  // swagger docs
-        /\/auth\/.+/, // auth routes
-      ],
-    }),
+    configureAuth(app),
     configureSwagger(app),
   ]).then(() => {
     // Default React application

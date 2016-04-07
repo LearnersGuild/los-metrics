@@ -18,11 +18,11 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 
 7. Create your `.env` file for your environment. Example:
 
-
         PORT=9004
         APP_BASEURL=http://product-metrics.learnersguild.dev
-        AUTH0_CLIENT_ID=<Auth0 client ID>
-        AUTH0_CLIENT_SECRET=<Auth0 client secret>
+        IDM_BASE_URL=http://idm.learnersguild.dev
+        JWT_PRIVATE_KEY="<get from IDM>"
+        JWT_PUBLIC_KEY="<get from IDM"
         ZENHUB_PRIVATE_API_TOKEN=<ZenHub private API token>
         ZENHUB_PUBLIC_API_TOKEN=<ZenHub public API token>
         GITHUB_API_TOKEN=<GitHub API token>

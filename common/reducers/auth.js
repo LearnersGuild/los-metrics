@@ -1,17 +1,16 @@
-import {LOAD_METRICS_UNAUTHORIZED} from '../actions/loadMetrics'
+import {UPDATE_JWT} from '../actions/updateJWT'
 
 const initialState = {
   currentUser: null,
-  isSigningIn: false,
+  lgJWT: null,
+  isBusy: false,
 }
 
 export function auth(state = initialState, action) {
   switch (action.type) {
-    case LOAD_METRICS_UNAUTHORIZED:
-      console.error('Unauthorized:', action.error)
+    case UPDATE_JWT:
       return Object.assign({}, state, {
-        currentUser: null,
-        isSigningIn: false,
+        lgJWT: action.lgJWT,
       })
     default:
       return state
