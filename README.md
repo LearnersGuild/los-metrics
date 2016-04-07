@@ -8,9 +8,9 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 
 1. Clone the repository.
 
-2. Setup [pow][pow]. Then figure out which port you intend to use and create the pow config file:
+2. Setup and run [mehserve][mehserve]. Then figure out which port you intend to use and create the mehserve config file:
 
-        $ echo 9004 > ~/.pow/product-metrics.learnersguild
+        $ echo 9004 > ~/.mehserve/product-metrics.learnersguild
 
 3. Set your `NODE_ENV` environment variable:
 
@@ -44,3 +44,6 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 ## License
 
 See the [LICENSE](./LICENSE) file.
+
+
+[mehserve]: https://github.com/timecounts/mehserve
