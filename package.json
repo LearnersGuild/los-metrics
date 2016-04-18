@@ -29,7 +29,7 @@
   },
   "homepage": "https://github.com/LearnersGuild/project-metrics#readme",
   "dependencies": {
-    "@learnersguild/idm-jwt-auth": "^0.2.3",
+    "@learnersguild/idm-jwt-auth": "^0.2.4",
     "babel-core": "^6.3.21",
     "babel-loader": "^6.2.3",
     "babel-plugin-add-module-exports": "^0.1.2",
