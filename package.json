@@ -127,6 +127,9 @@
             "HTTPS"
           ]
         }
+      ],
+      "xo/filename-case": [
+        0
       ]
     },
     "esnext": true,
