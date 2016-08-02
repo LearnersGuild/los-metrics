@@ -37,6 +37,7 @@ function getRepositoriesMetrics() {
   return getRepositoryIds()
     .then(repoIds => Promise.all(repoIds.map(repoId => getRepositoryMetrics(repoId))))
     .then(metrics => (
+      /* eslint-disable camelcase */
       metrics.map(({
         name,
         last_snapshot: {
