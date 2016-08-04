@@ -1,7 +1,10 @@
-import {getRepositoryIds, getRepositoryMetrics} from '../common/fetchers/codeClimate'
+import {median, mean, stdDev} from '../util/math'
+import {table} from '../util/presenters'
+import {getRepositories, getRepositoryMetrics} from '../fetchers/codeClimate'
 
 function getRepositoriesMetrics() {
-  return getRepositoryIds()
+  return getRepositories()
+    .then(repos => repos.map(repo => repo.id))
     .then(repoIds => Promise.all(repoIds.map(repoId => getRepositoryMetrics(repoId))))
     .then(metrics => (
       /* eslint-disable camelcase */
@@ -17,32 +20,6 @@ function getRepositoriesMetrics() {
         coveredPercent
       }))
     ))
-}
-
-function median(values) {
-  values = values.sort((a, b) => a - b)
-
-  const middle = Math.floor((values.length / 2) - 1)
-  if (values.length % 2) {
-    return values[middle]
-  }
-
-  return (values[middle] + values[middle + 1]) / 2.0
-}
-
-function mean(values) {
-  const sum = values.reduce((sum, value) => sum + value, 0)
-  return sum / values.length
-}
-
-function stdDev(values) {
-  const avg = mean(values)
-  const squareDiffs = values.map(value => {
-    const diff = value - avg
-    return diff * diff
-  })
-  const avgSquareDiff = mean(squareDiffs)
-  return Math.sqrt(avgSquareDiff)
 }
 
 function getTopLevelMetrics() {
@@ -66,14 +43,7 @@ function getTopLevelMetrics() {
 }
 
 if (!module.parent) {
-  require('dotenv').load()
-
   getTopLevelMetrics()
-    .then(metrics => {
-      const keys = Object.keys(metrics)
-      const values = Object.keys(metrics).map(key => metrics[key])
-      console.log(keys.join('\t'))
-      console.log(values.join('\t'))
-    })
+    .then(metrics => console.info(table(metrics, {includeHeaders: true})))
     .catch(err => console.error(err.stack))
 }
