@@ -16,7 +16,9 @@
     "start": "npm run",
     "lint": "./node_modules/.bin/xo",
     "test:run": "./node_modules/.bin/babel-tape-runner '**/__tests__/*.test.js' | ./node_modules/.bin/faucet",
-    "test": "npm run lint && npm run test:run"
+    "test": "npm run lint && npm run test:run",
+    "metrics:flow": "./node_modules/.bin/babel-node ./src/metrics/flow",
+    "metrics:quality": "./node_modules/.bin/babel-node ./src/metrics/quality"
   },
   "keywords": [
     "metrics"
@@ -55,6 +57,9 @@
     ]
   },
   "xo": {
+    "ignore": [
+      "lib/**/*"
+    ],
     "rules": {
       "comma-dangle": [
         0
