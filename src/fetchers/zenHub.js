@@ -13,6 +13,9 @@ function apiURL(path) {
   return `${config.get('api.zenHub.baseURL')}${path}`
 }
 
+// **NOTE:**
+//   this is an undocumented API that I sniffed in Chrome, which is why it needs
+//   its own special auth token (also sniffed)
 export function getReposForBoard(repoId) {
   const reposUrl = apiURL(`/v4/repos/${repoId}/board/repos`)
   return apiFetch(reposUrl, {headers: unpublishedApiHeaders})
