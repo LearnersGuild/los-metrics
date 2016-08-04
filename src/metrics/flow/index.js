@@ -1,16 +1,16 @@
 /* eslint-disable no-console, camelcase */
 import config from 'config'
 
-import {table} from '../util/presenters'
+import {table} from '../../util/presenters'
 import {
   getReposForBoard,
   getBoardInfo,
   getIssueEvents,
-} from '../fetchers/zenHub'
+} from '../../fetchers/zenHub'
 import {
   getRepo,
   getClosedIssuesForRepoSince,
-} from '../fetchers/gitHub'
+} from '../../fetchers/gitHub'
 
 const ISSUES_CLOSED_SINCE_DATE = new Date()
 ISSUES_CLOSED_SINCE_DATE.setDate(ISSUES_CLOSED_SINCE_DATE.getDate() - 7)

@@ -1,6 +1,6 @@
-import {median, mean, stdDev} from '../util/math'
-import {table} from '../util/presenters'
-import {getRepositories, getRepositoryMetrics} from '../fetchers/codeClimate'
+import {median, mean, stdDev} from '../../util/math'
+import {table} from '../../util/presenters'
+import {getRepositories, getRepositoryMetrics} from '../../fetchers/codeClimate'
 
 function getRepositoriesMetrics() {
   return getRepositories()
