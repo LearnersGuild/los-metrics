@@ -8,7 +8,7 @@ const headers = {
 }
 
 function apiURL(path) {
-  return `${config.get('api.gitHub.baseURL')}/${path}`
+  return `${config.get('api.gitHub.baseURL')}${path}`
 }
 
 export function getRepo(repoName) {

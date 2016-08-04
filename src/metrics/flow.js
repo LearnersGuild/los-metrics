@@ -1,22 +1,16 @@
 /* eslint-disable no-console, camelcase */
-import fs from 'fs'
-import path from 'path'
-import mkdirp from 'mkdirp'
+import config from 'config'
 
+import {table} from '../util/presenters'
 import {
   getReposForBoard,
   getBoardInfo,
   getIssueEvents,
-} from '../common/fetchers/zenHub'
-
+} from '../fetchers/zenHub'
 import {
   getRepo,
   getClosedIssuesForRepoSince,
-} from '../common/fetchers/gitHub'
-
-if (process.env.NODE_ENV !== 'production') {
-  require('dotenv').load()
-}
+} from '../fetchers/gitHub'
 
 const ISSUES_CLOSED_SINCE_DATE = new Date()
 ISSUES_CLOSED_SINCE_DATE.setDate(ISSUES_CLOSED_SINCE_DATE.getDate() - 7)
@@ -37,25 +31,20 @@ function getIssuesEvents(issues) {
 }
 
 function zipReposIssues(repos, reposIssues) {
-  let issues = []
-  for (const i in repos) {
-    if (repos.hasOwnProperty(i)) {
-      const repo = repos[i]
-      const repoIssues = reposIssues[i]
-      const repoIssuesData = repoIssues.map(issue => {
-        return {
-          repo_id: repo.repo_id,
-          repo_name: repo.cached_repo_name,
-          id: issue.id,
-          number: issue.number,
-          created_at: issue.created_at,
-          closed_at: issue.closed_at,
-        }
-      })
-      issues = issues.concat(repoIssuesData)
-    }
-  }
-  return issues
+  return repos.reduce((issues, repo, i) => {
+    const repoIssues = reposIssues[i]
+    const repoIssuesData = repoIssues.map(issue => {
+      return {
+        repo_id: repo.repo_id,
+        repo_name: repo.cached_repo_name,
+        id: issue.id,
+        number: issue.number,
+        created_at: issue.created_at,
+        closed_at: issue.closed_at,
+      }
+    })
+    return issues.concat(repoIssuesData)
+  }, [])
 }
 
 function getIssuesMetrics(issuesWithEvents) {
@@ -85,7 +74,6 @@ async function computeMetricsForRepo(repoName) {
     const repos = await getReposForBoard(repo.id)
 
     // compute wip
-    console.log(`Computing wip for ${repoName} ...`)
     const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
     const wip = reposBoardInfos.reduce((wipSum, boardInfo) => {
       const boardSum = boardInfo.pipelines.reduce((boardWipSum, pipeline) => {
@@ -96,52 +84,39 @@ async function computeMetricsForRepo(repoName) {
 
     // compute throughput, leadTime, and cycleTime
     const reposIssues = await getIssuesForRepos(repos.repos)
-    reposIssues.forEach((repoIssues, i) => {
-      const boardRepo = repos.repos[i]
-      console.log(`Found ${repoIssues.length} recently closed issues in ${boardRepo.cached_repo_name} repo.`)
-    })
     const issues = zipReposIssues(repos.repos, reposIssues)
-    // console.log('issues:', issues)
     const issuesEvents = await getIssuesEvents(issues)
     const issuesWithEvents = issues.map((issue, i) => Object.assign({}, issue, {events: issuesEvents[i]}))
-    // console.log('issuesWithEvents:', issuesWithEvents)
-    console.log(`Computing leadTime and cycleTime for ${repoName} repo ...`)
     const issuesWithMetrics = getIssuesMetrics(issuesWithEvents)
-    // console.log('leadTimes:', issuesWithMetrics.map(issue => issue.leadTime))
-    const leadTime = issuesWithMetrics.reduce((sum, issue) => {
+    const leadTimeSeconds = issuesWithMetrics.reduce((sum, issue) => {
       return sum + issue.leadTime
     }, 0) / issuesWithMetrics.length
-    // console.log('cycleTimes:', issuesWithMetrics.map(issue => issue.cycleTime))
-    const cycleTime = issuesWithMetrics.reduce((sum, issue) => {
+    const cycleTimeSeconds = issuesWithMetrics.reduce((sum, issue) => {
       return sum + issue.cycleTime
     }, 0) / issuesWithMetrics.length
+    const secondsInDay = 60 * 60 * 24
+    const leadTime = Math.round(leadTimeSeconds / secondsInDay * 10) / 10
+    const cycleTime = Math.round(cycleTimeSeconds / secondsInDay * 10) / 10
 
     return {
-      name: repoName,
-      metrics: {leadTime, cycleTime, wip, throughput: issuesWithMetrics.length},
+      repo: repoName,
+      leadTime,
+      cycleTime,
+      wip,
+      throughput: issuesWithMetrics.length,
     }
   } catch (err) {
-    console.error('Error:', err)
     throw err
   }
 }
 
 async function computeMetrics() {
   try {
-    const reposToCompute = process.env.GITHUB_REPOS.split(',')
-    console.log(`Computing metrics for repos: ${reposToCompute}`)
+    const reposToCompute = config.get('flow.repos')
     const promises = reposToCompute.map(repoName => computeMetricsForRepo(repoName))
     const projects = await Promise.all(promises)
-
-    // save the output to a JSON file
-    const dataDir = path.join(__dirname, '..', 'data')
-    const dataFile = path.join(dataDir, 'projects.json')
-    console.log(`Writing data to ${dataFile} ...`)
-    await mkdirp(dataDir)
-    fs.writeFileSync(dataFile, JSON.stringify(projects))
-    console.log('Done!')
+    console.log(table(projects, {includeHeaders: true}))
   } catch (err) {
-    console.error('Error:', err)
     throw err
   }
 }
