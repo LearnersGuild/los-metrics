@@ -1,8 +1,18 @@
 /* eslint-disable no-console, camelcase */
 import fs from 'fs'
 import path from 'path'
-import fetch from 'isomorphic-fetch'
 import mkdirp from 'mkdirp'
+
+import {
+  getReposForBoard,
+  getBoardInfo,
+  getIssueEvents,
+} from '../common/fetchers/zenHub'
+
+import {
+  getRepo,
+  getClosedIssuesForRepoSince,
+} from '../common/fetchers/gitHub'
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').load()
@@ -11,64 +21,14 @@ if (process.env.NODE_ENV !== 'production') {
 const ISSUES_CLOSED_SINCE_DATE = new Date()
 ISSUES_CLOSED_SINCE_DATE.setDate(ISSUES_CLOSED_SINCE_DATE.getDate() - 7)
 
-function getRepo(repoName) {
-  const repoUrl = `https://api.github.com/repos/LearnersGuild/${repoName}`
-  return fetch(repoUrl, {
-    headers: {
-      Authorization: `token ${process.env.GITHUB_API_TOKEN}`,
-      Accept: 'application/vnd.github.v3+json',
-    },
-  }).then(resp => resp.json())
-}
-
-function getReposForBoard(repoId) {
-  const reposUrl = `https://api.zenhub.io/v4/repos/${repoId}/board/repos`
-  return fetch(reposUrl, {
-    headers: {
-      'Accept': 'application/json',
-      'x-authentication-token': process.env.ZENHUB_PRIVATE_API_TOKEN,
-    },
-  }).then(resp => resp.json())
-}
-
-function getIssuesForRepo(repoName) {
-  const issuesUrl = `https://api.github.com/repos/LearnersGuild/${repoName}/issues?state=closed&since=${ISSUES_CLOSED_SINCE_DATE.toISOString()}`
-  return fetch(issuesUrl, {
-    headers: {
-      Authorization: `token ${process.env.GITHUB_API_TOKEN}`,
-      Accept: 'application/vnd.github.v3+json',
-    },
-  }).then(resp => resp.json())
-}
-
-function getIssuesForRepos(repos) {
-  const promises = repos.map(repo => getIssuesForRepo(repo.cached_repo_name))
-  return Promise.all(promises)
-}
-
-function getBoardInfo(repoId) {
-  const boardUrl = `https://api.zenhub.io/p1/repositories/${repoId}/board`
-  return fetch(boardUrl, {
-    headers: {
-      'Accept': 'application/json',
-      'x-authentication-token': process.env.ZENHUB_PUBLIC_API_TOKEN,
-    },
-  }).then(resp => resp.json())
-}
-
 function getBoardInfoForRepos(repos) {
   const promises = repos.map(repo => getBoardInfo(repo.repo_id))
   return Promise.all(promises)
 }
 
-function getIssueEvents(issue) {
-  const issueEventsUrl = `https://api.zenhub.io/p1/repositories/${issue.repo_id}/issues/${issue.number}/events`
-  return fetch(issueEventsUrl, {
-    headers: {
-      'Accept': 'application/json',
-      'x-authentication-token': process.env.ZENHUB_PUBLIC_API_TOKEN,
-    },
-  }).then(resp => resp.json())
+function getIssuesForRepos(repos) {
+  const promises = repos.map(repo => getClosedIssuesForRepoSince(repo.cached_repo_name, ISSUES_CLOSED_SINCE_DATE))
+  return Promise.all(promises)
 }
 
 function getIssuesEvents(issues) {

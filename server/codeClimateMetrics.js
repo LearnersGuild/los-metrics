@@ -1,37 +1,4 @@
-import fetch from 'isomorphic-fetch'
-
-function apiURL(path, baseURL = 'https://codeclimate.com/api') {
-  return `${baseURL}/${path}?api_token=${process.env.CODECLIMATE_API_TOKEN}`
-}
-
-function getRepositoryIds() {
-  return fetch(apiURL('/repos'), {
-    headers: {
-      Accept: 'application/json',
-    },
-  })
-    .then(resp => {
-      if (!resp.ok) {
-        throw new Error(resp.statusText)
-      }
-      return resp.json()
-    })
-    .then(repos => repos.map(repo => repo.id))
-}
-
-function getRepositoryMetrics(repoId) {
-  return fetch(apiURL(`/repos/${repoId}`), {
-    headers: {
-      Accept: 'application/json',
-    },
-  })
-    .then(resp => {
-      if (!resp.ok) {
-        throw new Error(resp.statusText)
-      }
-      return resp.json()
-    })
-}
+import {getRepositoryIds, getRepositoryMetrics} from '../common/fetchers/codeClimate'
 
 function getRepositoriesMetrics() {
   return getRepositoryIds()
