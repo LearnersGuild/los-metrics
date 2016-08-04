@@ -1,7 +1,9 @@
+import config from 'config'
+
 import apiFetch from '../util/apiFetch'
 
-function apiURL(path, baseURL = 'https://codeclimate.com/api', apiToken = process.env.CODECLIMATE_API_TOKEN) {
-  return `${baseURL}/${path}?api_token=${apiToken}`
+function apiURL(path) {
+  return `${config.get('api.codeClimate.baseURL')}/${path}?api_token=${config.get('api.codeClimate.token')}`
 }
 
 export function getRepositoryIds() {

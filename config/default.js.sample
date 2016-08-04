@@ -1,0 +1,19 @@
+module.exports = {
+  api: {
+    gitHub: {
+      baseURL: 'https://api.github.com',
+      token: undefined,
+    },
+    zenHub: {
+      baseURL: 'https://api.zenhub.com',
+      token: undefined,
+    },
+    codeClimate: {
+      baseURL: 'https://codeclimate.com/api',
+      token: undefined,
+    },
+  },
+  flow: {
+    mainRepo: 'learning-os-software',
+  }
+}

@@ -8,21 +8,16 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 
 1. Clone the repository.
 
-2. Create your `.env` file for your environment. Example:
-
-        ZENHUB_API_TOKEN=<ZenHub private API token>
-        GITHUB_API_TOKEN=<GitHub API token>
-        CODECLIMATE_API_TOKEN=<Code Climate API token>
-        GITHUB_REPOS=learning-os-software
+2. Create your `config/default.js` file based on the `config/default.js.sample`. You may need to find or acquire some ZenHub, GitHub, and Code Climate API tokens.
 
 8. Run the setup tasks:
 
         $ npm install
 
-9. Run the scripts:
+9. Run the 'metrics:' scripts:
 
-        $ npm run          # list the runnable scripts
-        $ npm run SCRIPT   # run the SCRIPT script
+        $ npm run                  # list the runnable scripts
+        $ npm run metrics:SCRIPT   # run the SCRIPT metrics script
 
 ## License
 

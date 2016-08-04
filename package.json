@@ -28,6 +28,7 @@
   },
   "homepage": "https://github.com/LearnersGuild/los-metrics#readme",
   "dependencies": {
+    "config": "^1.21.0",
     "isomorphic-fetch": "^2.2.0",
     "mkdirp": "^0.5.1"
   },
