@@ -16,7 +16,21 @@ module.exports = {
   },
   flow: {
     repos: [
-      'learning-os-software',
+      'game',
+      'game-prototype',
     ],
+    wip: {
+      lanes: [
+        'In Progress',
+        'Review',
+      ],
+    },
+    cycleTime: {
+      startLane: 'In Progress',
+    },
+    leadTime: {
+      startLane: 'Backlog',
+    },
+    newIssuesLane: 'New Issues',
   },
 }

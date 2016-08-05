@@ -26,7 +26,7 @@ export function getBoardInfo(repoId) {
   return apiFetch(boardUrl, {headers: publicApiHeaders})
 }
 
-export function getIssueEvents(issue) {
-  const issueEventsUrl = apiURL(`/p1/repositories/${issue.repo_id}/issues/${issue.number}/events`)
+export function getIssueEvents(repo, issue) {
+  const issueEventsUrl = apiURL(`/p1/repositories/${repo.repo_id}/issues/${issue.number}/events`)
   return apiFetch(issueEventsUrl, {headers: publicApiHeaders})
 }

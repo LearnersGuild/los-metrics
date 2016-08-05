@@ -98,7 +98,7 @@ test('fetchers/zenHub', t => {
       .get('/p1/repositories/123/issues/4/events')
       .reply(200, JSON.stringify(expected))
 
-    return getIssueEvents({repo_id: 123, number: 4})
+    return getIssueEvents({repo_id: 123}, {number: 4})
       .then(data => tt.deepEqual(data, expected))
   })
 
