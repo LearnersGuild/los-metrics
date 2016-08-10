@@ -15,7 +15,7 @@
     "build": "./node_modules/.bin/babel -d lib/ src/ --ignore __tests__",
     "start": "npm run",
     "lint": "./node_modules/.bin/xo",
-    "test:run": "./node_modules/.bin/babel-tape-runner '**/__tests__/*.test.js' | ./node_modules/.bin/faucet",
+    "test:run": "NODE_ENV=test ./node_modules/.bin/babel-tape-runner '**/__tests__/*.test.js' | ./node_modules/.bin/faucet",
     "test": "npm run lint && npm run test:run",
     "metrics": "npm run metrics:flow && npm run metrics:quality",
     "metrics:flow": "./node_modules/.bin/babel-node ./src/metrics/flow",
@@ -32,6 +32,7 @@
   "homepage": "https://github.com/LearnersGuild/los-metrics#readme",
   "dependencies": {
     "config": "^1.21.0",
+    "dotenv": "^2.0.0",
     "isomorphic-fetch": "^2.2.0",
     "mkdirp": "^0.5.1",
     "parse-link-header": "^0.4.1",

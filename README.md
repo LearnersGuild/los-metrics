@@ -8,13 +8,18 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 
 1. Clone the repository.
 
-2. Create your `config/default.js` file based on the `config/default.js.sample`. You may need to find or acquire some ZenHub, GitHub, and Code Climate API tokens.
+2. Create your `.env.<NODE_ENV>` files as appropriate for each environment. This software depends on unpublished ZenHub APIs. You'll have to "sniff" your unpublished API token using Chrome developer tools by looking at the request for the `/board` endpoint:
 
-8. Run the setup tasks:
+        GITHUB_API_TOKEN=<YOUR GITHUB API TOKEN>
+        ZENHUB_API_TOKEN=<YOUR ZENHUB API TOKEN>
+        ZENHUB_API_UNPUBLISHED_TOKEN=<YOUR ZENHUB API TOKEN FOR UNPUBLISHED APIS>
+        CODECLIMATE_API_TOKEN=<YOUR CODECLIMATE API TOKEN>
+
+3. Run the setup tasks:
 
         $ npm install
 
-9. Run the 'metrics:' scripts:
+4. Run the 'metrics:' scripts:
 
         $ npm run                  # list the runnable scripts
         $ npm run metrics:SCRIPT   # run the SCRIPT metrics script
