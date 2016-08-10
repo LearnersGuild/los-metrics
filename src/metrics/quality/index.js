@@ -33,11 +33,11 @@ function getTopLevelMetrics() {
         medianGPA: median(gpas),
         meanGPA: mean(gpas),
         stdDevGPA: stdDev(gpas),
-        minCoverage: Math.min(...coverages),
-        maxCoverage: Math.max(...coverages),
-        medianCoverage: median(coverages),
-        meanCoverage: mean(coverages),
-        stdDevCoverage: stdDev(coverages),
+        minCoverage: Math.min(...coverages) / 100.0,
+        maxCoverage: Math.max(...coverages) / 100.0,
+        medianCoverage: median(coverages) / 100.0,
+        meanCoverage: mean(coverages) / 100.0,
+        stdDevCoverage: stdDev(coverages) / 100.0,
       }
     })
 }
