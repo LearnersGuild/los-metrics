@@ -19,10 +19,9 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 
         $ npm install
 
-4. Run the 'metrics:' scripts:
+4. Run the 'metrics' script:
 
-        $ npm run                  # list the runnable scripts
-        $ npm run metrics:SCRIPT   # run the SCRIPT metrics script
+        $ npm run metrics
 
 ## License
 

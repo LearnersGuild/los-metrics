@@ -4,7 +4,7 @@ Here's how we'd like you to contribute.
 
 Clone the repo, then create a branch:
 
-    $ git clone git@github.com:LearnersGuild/product-metrics.git
+    $ git clone git@github.com:LearnersGuild/los-metrics.git
     $ git co -b <your branch name>
 
 Make sure the tests pass:
