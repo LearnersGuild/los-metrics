@@ -1,6 +1,6 @@
-# product-metrics
+# los-metrics
 
-This is a simple web application to compute and display product development metrics.
+Utilities to compute metrics for the LOS circle.
 
 ## Getting Started
 
@@ -8,42 +8,22 @@ Be sure you've read the [instructions for contributing](./CONTRIBUTING.md).
 
 1. Clone the repository.
 
-2. Setup and run [mehserve][mehserve]. Then figure out which port you intend to use and create the mehserve config file:
+2. Create your `.env.<NODE_ENV>` files as appropriate for each environment. This software depends on unpublished ZenHub APIs. You'll have to "sniff" your unpublished API token using Chrome developer tools by looking at the request for the `/board` endpoint:
 
-        $ echo 9004 > ~/.mehserve/product-metrics.learnersguild
+        GITHUB_API_TOKEN=<YOUR GITHUB API TOKEN>
+        ZENHUB_API_TOKEN=<YOUR ZENHUB API TOKEN>
+        ZENHUB_API_UNPUBLISHED_TOKEN=<YOUR ZENHUB API TOKEN FOR UNPUBLISHED APIS>
+        CODECLIMATE_API_TOKEN=<YOUR CODECLIMATE API TOKEN>
 
-3. Set your `NODE_ENV` environment variable:
-
-        $ export NODE_ENV=development
-
-7. Create your `.env` file for your environment. Example:
-
-        PORT=9004
-        APP_BASEURL=http://product-metrics.learnersguild.dev
-        IDM_BASE_URL=http://idm.learnersguild.dev
-        JWT_PRIVATE_KEY="<get from IDM>"
-        JWT_PUBLIC_KEY="<get from IDM"
-        ZENHUB_PRIVATE_API_TOKEN=<ZenHub private API token>
-        ZENHUB_PUBLIC_API_TOKEN=<ZenHub public API token>
-        GITHUB_API_TOKEN=<GitHub API token>
-        GITHUB_REPOS=learning-os,learning-os-software,product-metrics
-        COMPUTATION_SCHEDULE=0 0 3 * * *
-
-8. Run the setup tasks:
+3. Run the setup tasks:
 
         $ npm install
 
-9. Run the server:
+4. Run the 'metrics:' scripts:
 
-        $ npm start
-
-10. Visit the server in your browser:
-
-        $ open http://product-metrics.learnersguild.dev
+        $ npm run                  # list the runnable scripts
+        $ npm run metrics:SCRIPT   # run the SCRIPT metrics script
 
 ## License
 
 See the [LICENSE](./LICENSE) file.
-
-
-[mehserve]: https://github.com/timecounts/mehserve
