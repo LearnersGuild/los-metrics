@@ -37,35 +37,48 @@ function issueDataForGitHubIssue(repo) {
   }
 }
 
-async function getIssueDataForRepoSince(repo, since) {
+async function getIssueDataByRepoIdSince(repos, since) {
   try {
-    const ghIssues = await getIssuesForRepo(repo.cached_repo_name, {state: 'closed', since: since.toISOString()})
-    const issueDataPromises = ghIssues.map(issueDataForGitHubIssue(repo))
-    return Promise.all(issueDataPromises)
+    const promises = repos.map(repo => getIssuesForRepo(repo.cached_repo_name, {state: 'all', since: since.toISOString()}))
+    const perRepoIssues = await Promise.all(promises)
+    return perRepoIssues.reduce((curr, issues, i) => {
+      const {repo_id} = repos[i]
+      curr.set(repo_id, issues)
+      return curr
+    }, new Map())
   } catch (err) {
     throw err
   }
 }
 
-async function getComposedIssuesForReposSince(repos, since) {
+async function getClosedComposedNonPRIssues(repos, ghIssuesByRepoId) {
   try {
-    const promises = repos.map(repo => getIssueDataForRepoSince(repo, since))
-    const perRepoIssueDatas = await Promise.all(promises)
-    return perRepoIssueDatas
-      .reduce((curr, issueDatas) => curr.concat(issueDatas), [])
-      .map(issueData => {
-        const {repo, ghIssue, zhIssueEvents} = issueData
-        return composeIssue(repo, ghIssue, zhIssueEvents)
-      })
+    let issueDataPromises = []
+    ghIssuesByRepoId.forEach((issues, repoId) => {
+      const repo = repos.find(repo => repo.repo_id === repoId)
+      const closedNonPRIssues = issues
+        .filter(issue => Boolean(issue.closed_at) && !issue.pull_request)
+      const repoIssueDataPromises = closedNonPRIssues
+        .map(issueDataForGitHubIssue(repo))
+      issueDataPromises = issueDataPromises.concat(repoIssueDataPromises)
+    })
+    const issueDatas = await Promise.all(issueDataPromises)
+    return issueDatas.map(({repo, ghIssue, zhIssueEvents}) => (
+      composeIssue(repo, ghIssue, zhIssueEvents)
+    ))
   } catch (err) {
     throw err
   }
 }
 
-function computeWipForAllRepos(reposBoardInfos) {
+function computeWipForAllRepos(repos, reposBoardInfos, ghIssuesByRepoId) {
   return reposBoardInfos
-    .reduce((curr, boardInfo) => {
-      return curr + computeWip(boardInfo)
+    .reduce((curr, boardInfo, i) => {
+      const repo = repos[i]
+      const prIssueNumbers = [...ghIssuesByRepoId.get(repo.repo_id)]
+        .filter(issue => Boolean(issue.pull_request))
+        .map(issue => issue.number)
+      return curr + computeWip(boardInfo, prIssueNumbers)
     }, 0)
 }
 
@@ -74,7 +87,8 @@ async function computeMetricsForBoard(repoName, since) {
     const repo = await getRepo(repoName)
     const repos = await getReposForBoard(repo.id)
     const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
-    const composedIssues = await getComposedIssuesForReposSince(repos.repos, since)
+    const ghIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since)
+    const composedIssues = await getClosedComposedNonPRIssues(repos.repos, ghIssuesByRepoId)
     const issueCycleTimes = composedIssues
       .map(composedIssue => {
         const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
@@ -92,7 +106,7 @@ async function computeMetricsForBoard(repoName, since) {
       cycleTime: mean(issueCycleTimes),
       leadTime: mean(issueLeadTimes),
       throughput: composedIssues.length,
-      wip: computeWipForAllRepos(reposBoardInfos),
+      wip: computeWipForAllRepos(repos.repos, reposBoardInfos, ghIssuesByRepoId),
     }
   } catch (err) {
     throw err

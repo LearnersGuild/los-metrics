@@ -18,11 +18,12 @@ function boardLaneNames(boardInfo) {
   return boardInfo.pipelines.map(p => p.name)
 }
 
-export function wip(boardInfo) {
+export function wip(boardInfo, prIssueNumbers = []) {
   assertBoardInfo(boardInfo)
   const wipLaneNames = config.get('flow.wip.lanes')
   return boardInfo.pipelines.reduce((boardWipSum, lane) => {
-    return wipLaneNames.includes(lane.name) ? boardWipSum + lane.issues.length : boardWipSum
+    const nonPRIssuesInLane = lane.issues.filter(({issue_number}) => !prIssueNumbers.includes(issue_number))
+    return wipLaneNames.includes(lane.name) ? boardWipSum + nonPRIssuesInLane.length : boardWipSum
   }, 0)
 }
 
@@ -43,11 +44,13 @@ function computeTimeForIssue(composedIssue, boardInfo, startLane) {
 export function cycleTimeForIssue(composedIssue, boardInfo) {
   assertComposedIssue(composedIssue)
   const cycleTimeStartLane = config.get('flow.cycleTime.startLane')
-  return computeTimeForIssue(composedIssue, boardInfo, cycleTimeStartLane)
+  const cycleTime = computeTimeForIssue(composedIssue, boardInfo, cycleTimeStartLane)
+  return cycleTime
 }
 
 export function leadTimeForIssue(composedIssue, boardInfo) {
   assertComposedIssue(composedIssue)
   const leadTimeStartLane = config.get('flow.leadTime.startLane')
-  return computeTimeForIssue(composedIssue, boardInfo, leadTimeStartLane)
+  const leadTime = computeTimeForIssue(composedIssue, boardInfo, leadTimeStartLane)
+  return leadTime
 }
