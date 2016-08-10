@@ -10,7 +10,7 @@ import {
 } from '../../fetchers/zenHub'
 import {
   getRepo,
-  getClosedIssuesForRepoSince,
+  getIssuesForRepo,
 } from '../../fetchers/gitHub'
 import {
   composeIssue,
@@ -39,7 +39,7 @@ function issueDataForGitHubIssue(repo) {
 
 async function getIssueDataForRepoSince(repo, since) {
   try {
-    const ghIssues = await getClosedIssuesForRepoSince(repo.cached_repo_name, since)
+    const ghIssues = await getIssuesForRepo(repo.cached_repo_name, {state: 'closed', since: since.toISOString()})
     const issueDataPromises = ghIssues.map(issueDataForGitHubIssue(repo))
     return Promise.all(issueDataPromises)
   } catch (err) {

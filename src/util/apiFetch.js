@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch'
+import parseLinkHeader from 'parse-link-header'
 
 const DEFAULT_HEADERS = {
   Accept: 'application/json',
@@ -15,14 +16,36 @@ class APIError extends Error {
   }
 }
 
-export default function apiFetch(url, opts = {}) {
+function apiFetchRaw(url, opts = {}) {
   const headers = Object.assign({}, DEFAULT_HEADERS, opts.headers)
   const options = Object.assign({}, opts, {headers})
   return fetch(url, options)
+}
+
+export function apiFetch(url, opts = {}) {
+  return apiFetchRaw(url, opts)
     .then(resp => {
       if (!resp.ok) {
         throw new APIError(resp.status, resp.statusText, url)
       }
       return resp.json()
+    })
+}
+
+export function apiFetchAllPages(url, opts = {}, prevResults = []) {
+  return apiFetchRaw(url, opts)
+    .then(resp => {
+      if (!resp.ok) {
+        throw new APIError(resp.status, resp.statusText, url)
+      }
+      const link = parseLinkHeader(resp.headers.get('Link'))
+      const next = link && link.next ? link.next.url : null
+      return resp.json()
+        .then(results => {
+          if (next) {
+            return apiFetchAllPages(next, opts, prevResults.concat(results))
+          }
+          return prevResults.concat(results)
+        })
     })
 }

@@ -1,7 +1,7 @@
 import test from 'blue-tape'
 import nock from 'nock'
 
-import {getRepo, getClosedIssuesForRepoSince} from '../gitHub'
+import {getRepo, getIssuesForRepo} from '../gitHub'
 
 test('fetchers/gitHub', t => {
   t.test('getRepo returns a Promise', tt => {
@@ -21,7 +21,7 @@ test('fetchers/gitHub', t => {
       .then(data => tt.deepEqual(data, expected))
   })
 
-  t.test('getClosedIssuesForRepoSince returns a Promise', tt => {
+  t.test('getIssuesForRepo returns a Promise', tt => {
     tt.plan(1)
 
     const yesterday = new Date()
@@ -39,10 +39,10 @@ test('fetchers/gitHub', t => {
       title: 'Issue Numero Dos',
     }]
     nock('https://api.github.com')
-      .get(`/repos/LearnersGuild/some-repo/issues?state=closed&since=${yesterday.toISOString()}`)
+      .get(`/repos/LearnersGuild/some-repo/issues?since=${encodeURIComponent(yesterday.toISOString())}&state=closed`)
       .reply(200, JSON.stringify(expected))
 
-    return getClosedIssuesForRepoSince('some-repo', yesterday)
+    return getIssuesForRepo('some-repo', {state: 'closed', since: yesterday.toISOString()})
       .then(data => tt.deepEqual(data, expected))
   })
 

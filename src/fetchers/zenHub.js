@@ -1,6 +1,6 @@
 import config from 'config'
 
-import apiFetch from '../util/apiFetch'
+import {apiFetch} from '../util/apiFetch'
 
 const publicApiHeaders = {
   'x-authentication-token': config.get('api.zenHub.token'),

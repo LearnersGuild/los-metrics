@@ -1,6 +1,7 @@
 import config from 'config'
+import queryString from 'query-string'
 
-import apiFetch from '../util/apiFetch'
+import {apiFetch, apiFetchAllPages} from '../util/apiFetch'
 
 const headers = {
   Authorization: `token ${config.get('api.gitHub.token')}`,
@@ -16,7 +17,8 @@ export function getRepo(repoName) {
   return apiFetch(repoUrl, {headers})
 }
 
-export function getClosedIssuesForRepoSince(repoName, sinceDate) {
-  const issuesUrl = apiURL(`/repos/LearnersGuild/${repoName}/issues?state=closed&since=${sinceDate.toISOString()}`)
-  return apiFetch(issuesUrl, {headers})
+export function getIssuesForRepo(repoName, query = {}) {
+  const qs = queryString.stringify(query)
+  const issuesUrl = apiURL(`/repos/LearnersGuild/${repoName}/issues?${qs}`)
+  return apiFetchAllPages(issuesUrl, {headers})
 }

@@ -1,6 +1,6 @@
 import config from 'config'
 
-import apiFetch from '../util/apiFetch'
+import {apiFetch} from '../util/apiFetch'
 
 function apiURL(path) {
   return `${config.get('api.codeClimate.baseURL')}${path}?api_token=${config.get('api.codeClimate.token')}`
