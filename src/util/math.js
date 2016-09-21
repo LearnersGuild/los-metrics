@@ -1,19 +1,19 @@
-function assertArray(values, func) {
+function assertArray(values, func, arg = 'values') {
   if (!Array.isArray(values)) {
-    throw new Error(`can only compute the ${func} of an array`)
+    throw new Error(`can only compute the ${func} when ${arg} argument is an array`)
   }
 }
 
 export function median(values) {
   assertArray(values, 'median')
 
-  values = values.sort((a, b) => a - b)
-  const middle = Math.floor((values.length - 1) / 2)
-  if (values.length % 2) {
-    return values[middle]
+  const sortedValues = values.slice(0).sort((a, b) => a - b)
+  const middle = Math.floor((sortedValues.length - 1) / 2)
+  if (sortedValues.length % 2) {
+    return sortedValues[middle]
   }
 
-  return (values[middle] + values[middle + 1]) / 2.0
+  return (sortedValues[middle] + sortedValues[middle + 1]) / 2.0
 }
 
 export function mean(values) {
@@ -33,4 +33,12 @@ export function stdDev(values) {
   })
   const avgSquareDiff = mean(squareDiffs)
   return Math.sqrt(avgSquareDiff)
+}
+
+export function weightedMean(values, weights) {
+  assertArray(values, 'weightedMean', 'values')
+  assertArray(weights, 'weightedMean', 'weights')
+
+  const weighted = values.reduce((sum, value, i) => sum + (value * weights[i]), 0)
+  return weighted
 }

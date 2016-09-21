@@ -1,12 +1,22 @@
-import {median, mean, stdDev} from '../../util/math'
+import {weightedMean} from '../../util/math'
 import {table} from '../../util/presenters'
 import {getRepositories, getRepositoryMetrics} from '../../fetchers/codeClimate'
+import {getRepo} from '../../fetchers/gitHub'
 
-function getRepositoriesMetrics() {
+function getRepositoriesSizesAndMetrics() {
   return getRepositories()
-    .then(repos => repos.map(repo => repo.id))
-    .then(repoIds => Promise.all(repoIds.map(repoId => getRepositoryMetrics(repoId))))
-    .then(metrics => (
+    .then(repos => repos.map(repo => ({
+      id: repo.id,
+      name: repo.url.match(/[:/][A-Za-z_-]+\/([A-Za-z_-]+)\.git$/)[1]
+    })))
+    .then(repos => {
+      return Promise.all(repos.map(repo => getRepo(repo.name)))
+        .then(sizes => {
+          return Promise.all(repos.map(repo => getRepositoryMetrics(repo.id)))
+            .then(metrics => ({sizes, metrics}))
+        })
+    })
+    .then(({sizes, metrics}) => (
       /* eslint-disable camelcase */
       metrics.map(({
         name,
@@ -14,30 +24,42 @@ function getRepositoriesMetrics() {
           gpa,
           covered_percent: coveredPercent,
         },
-      }) => ({
+        previous_snapshot: {
+          covered_percent: previousCoveredPercent,
+        },
+      }, i) => ({
         name,
+        size: sizes[i].size,
         gpa,
-        coveredPercent
+        // For some reason, CodeClimate's API sometimes returns null in
+        // last_snapshot.covered_percent. :-(
+        coveredPercent: coveredPercent || previousCoveredPercent,
       }))
     ))
 }
 
 function getTopLevelMetrics() {
-  return getRepositoriesMetrics()
+  return getRepositoriesSizesAndMetrics()
     .then(metrics => {
+      // Because the size of the echo-chat repository is so HUGE, and because
+      // most of it is not our code, we'll override its size with a hardcoded
+      // estimate of 200k (from 2016-09-21, using `du -h` on the filesystem).
+      // Ugly? Yes. Better than misleading metrics? HELL yes.
+      const echoChatIdx = metrics.findIndex(m => m.name === 'echo-chat')
+      if (echoChatIdx >= 0) {
+        metrics[echoChatIdx].size = 200
+      }
+      const totalSize = metrics.map(m => m.size).reduce((total, curr) => total + curr, 0)
+      const weights = metrics.map(m => m.size / totalSize)
       const gpas = metrics.map(m => m.gpa)
       const coverages = metrics.map(m => m.coveredPercent)
       return {
         minGPA: Math.min(...gpas),
         maxGPA: Math.max(...gpas),
-        medianGPA: median(gpas),
-        meanGPA: mean(gpas),
-        stdDevGPA: stdDev(gpas),
+        weightedMeanGPA: weightedMean(gpas, weights),
         minCoverage: Math.min(...coverages) / 100.0,
         maxCoverage: Math.max(...coverages) / 100.0,
-        medianCoverage: median(coverages) / 100.0,
-        meanCoverage: mean(coverages) / 100.0,
-        stdDevCoverage: stdDev(coverages) / 100.0,
+        weightedMeanCoverage: weightedMean(coverages, weights) / 100.0,
       }
     })
 }
