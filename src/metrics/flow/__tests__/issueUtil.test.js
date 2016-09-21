@@ -12,6 +12,8 @@ import {
   zhIssueEventsInProgress,
 } from './mocks'
 
+const newIssuesLane = 'New Issues'
+
 /* eslint-disable camelcase */
 test('metrics/flow/issueUtil', t => {
   const repo = zhRepo()
@@ -40,7 +42,7 @@ test('metrics/flow/issueUtil', t => {
   t.test('millisPerLaneForIssue', tt => {
     tt.test('returns empty object if no issue events is passed', ttt => {
       ttt.plan(1)
-      ttt.deepEqual(millisPerLaneForIssue(ghIssue, []), {})
+      ttt.deepEqual(millisPerLaneForIssue(newIssuesLane, ghIssue, []), {})
     })
 
     tt.test('tallies the time in each lane', ttt => {
@@ -50,7 +52,7 @@ test('metrics/flow/issueUtil', t => {
         'Backlog': millisPerDay * 2,
         'In Progress': millisPerDay,
       }
-      const timePerLane = millisPerLaneForIssue(ghIssue, zhIssueEvents)
+      const timePerLane = millisPerLaneForIssue(newIssuesLane, ghIssue, zhIssueEvents)
       ttt.deepEqual(timePerLane, expected)
     })
 
@@ -60,7 +62,7 @@ test('metrics/flow/issueUtil', t => {
   t.test('composeIssue', tt => {
     tt.test('consolidates the various pieces of issue information', ttt => {
       ttt.plan(1)
-      const composedIssue = composeIssue(repo, ghIssue, zhIssueEvents)
+      const composedIssue = composeIssue(newIssuesLane, repo, ghIssue, zhIssueEvents)
       ttt.ok(Object.keys(composedIssue).includes('millisPerLane'), 'composeIssue should add "millisPerLane" attribute')
     })
   })

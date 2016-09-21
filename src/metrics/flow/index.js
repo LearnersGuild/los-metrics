@@ -51,7 +51,7 @@ async function getIssueDataByRepoIdSince(repos, since) {
   }
 }
 
-async function getClosedComposedNonPRIssues(repos, ghIssuesByRepoId) {
+async function getClosedComposedNonPRIssues(newIssuesLane, repos, ghIssuesByRepoId) {
   try {
     let issueDataPromises = []
     ghIssuesByRepoId.forEach((issues, repoId) => {
@@ -64,21 +64,21 @@ async function getClosedComposedNonPRIssues(repos, ghIssuesByRepoId) {
     })
     const issueDatas = await Promise.all(issueDataPromises)
     return issueDatas.map(({repo, ghIssue, zhIssueEvents}) => (
-      composeIssue(repo, ghIssue, zhIssueEvents)
+      composeIssue(newIssuesLane, repo, ghIssue, zhIssueEvents)
     ))
   } catch (err) {
     throw err
   }
 }
 
-function computeWipForAllRepos(repos, reposBoardInfos, ghIssuesByRepoId) {
+function computeWipForAllRepos(wipLaneNames, repos, reposBoardInfos, ghIssuesByRepoId) {
   return reposBoardInfos
     .reduce((curr, boardInfo, i) => {
       const repo = repos[i]
       const prIssueNumbers = [...ghIssuesByRepoId.get(repo.repo_id)]
         .filter(issue => Boolean(issue.pull_request))
         .map(issue => issue.number)
-      return curr + computeWip(boardInfo, prIssueNumbers)
+      return curr + computeWip(wipLaneNames, boardInfo, prIssueNumbers)
     }, 0)
 }
 
@@ -88,25 +88,32 @@ async function computeMetricsForBoard(repoName, since) {
     const repos = await getReposForBoard(repo.id)
     const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
     const ghIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since)
-    const composedIssues = await getClosedComposedNonPRIssues(repos.repos, ghIssuesByRepoId)
+    const newIssuesLane = config.get('flow.metrics')[repoName].get('newIssuesLane')
+    const composedIssues = await getClosedComposedNonPRIssues(newIssuesLane, repos.repos, ghIssuesByRepoId)
+
+    const cycleTimeStartLane = config.get('flow.metrics')[repoName].get('cycleTime.startLane')
     const issueCycleTimes = composedIssues
       .map(composedIssue => {
         const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
-        return cycleTimeForIssue(composedIssue, reposBoardInfos[boardInfoIdx])
+        return cycleTimeForIssue(cycleTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
       })
       .filter(num => num > 0)
+
+    const leadTimeStartLane = config.get('flow.metrics')[repoName].get('leadTime.startLane')
     const issueLeadTimes = composedIssues
       .map(composedIssue => {
         const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
-        return leadTimeForIssue(composedIssue, reposBoardInfos[boardInfoIdx])
+        return leadTimeForIssue(leadTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
       })
       .filter(num => num > 0)
+
+    const wipLaneNames = config.get('flow.metrics')[repoName].get('wip.lanes')
     return {
       project: repoName,
       cycleTime: mean(issueCycleTimes),
       leadTime: mean(issueLeadTimes),
       throughput: composedIssues.length,
-      wip: computeWipForAllRepos(repos.repos, reposBoardInfos, ghIssuesByRepoId),
+      wip: computeWipForAllRepos(wipLaneNames, repos.repos, reposBoardInfos, ghIssuesByRepoId),
     }
   } catch (err) {
     throw err
@@ -118,7 +125,7 @@ async function displayMetrics(since) {
     const reposToCompute = config.get('flow.repos')
     const promises = reposToCompute.map(repoName => computeMetricsForBoard(repoName, since))
     const projects = await Promise.all(promises)
-    console.log(table(projects, {includeHeaders: true}))
+    console.info(table(projects, {includeHeaders: true}))
   } catch (err) {
     throw err
   }

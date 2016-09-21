@@ -1,5 +1,3 @@
-import config from 'config'
-
 export function assertRepo(repo) {
   if (!Object.prototype.hasOwnProperty.call(repo, 'repo_id')) {
     throw new TypeError('repos must have a "repo_id" attribute')
@@ -43,9 +41,8 @@ function lanesToTransferTimes(xfers, attr) {
   }, new Map())
 }
 
-export function millisPerLaneForIssue(ghIssue, zhIssueEvents) {
+export function millisPerLaneForIssue(newIssuesLane, ghIssue, zhIssueEvents) {
   assertIssue(ghIssue)
-  const newIssuesLane = config.get('flow.newIssuesLane')
   const xfers = orderedIssueTransferEvents(zhIssueEvents)
   const lastLaneBeforeClosed = xfers.length ? xfers[xfers.length - 1].to_pipeline.name : newIssuesLane
 
@@ -79,7 +76,7 @@ export function millisPerLaneForIssue(ghIssue, zhIssueEvents) {
   return laneTimes
 }
 
-export function composeIssue(repo, ghIssue, zhIssueEvents) {
+export function composeIssue(newIssuesLane, repo, ghIssue, zhIssueEvents) {
   assertRepo(repo)
   assertIssue(ghIssue)
   return {
@@ -89,7 +86,7 @@ export function composeIssue(repo, ghIssue, zhIssueEvents) {
     number: ghIssue.number,
     createdAt: ghIssue.created_at,
     closedAt: ghIssue.closed_at,
-    millisPerLane: millisPerLaneForIssue(ghIssue, zhIssueEvents),
+    millisPerLane: millisPerLaneForIssue(newIssuesLane, ghIssue, zhIssueEvents),
     _ghIssue: ghIssue,
     _zhIssueEvents: zhIssueEvents
   }

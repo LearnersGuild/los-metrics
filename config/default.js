@@ -24,18 +24,39 @@ module.exports = {
       'game',
       'game-prototype',
     ],
-    wip: {
-      lanes: [
-        'In Progress',
-        'Review',
-      ],
+    metrics: {
+      'game': {
+        wip: {
+          lanes: [
+            'In Progress',
+            'Review',
+          ],
+        },
+        cycleTime: {
+          startLane: 'In Progress',
+        },
+        leadTime: {
+          startLane: 'Backlog',
+        },
+        newIssuesLane: 'New Issues',
+      },
+      'game-prototype': {
+        wip: {
+          lanes: [
+            'Game Mechanics',
+            'UI Design',
+            'In Progress',  // TODO: remove this after ZenHub stops reporting data on it (early 2017 should be safe)
+            'Review',
+          ],
+        },
+        cycleTime: {
+          startLane: 'In Progress',
+        },
+        leadTime: {
+          startLane: 'Backlog',
+        },
+        newIssuesLane: 'New Issues',
+      },
     },
-    cycleTime: {
-      startLane: 'In Progress',
-    },
-    leadTime: {
-      startLane: 'Backlog',
-    },
-    newIssuesLane: 'New Issues',
   },
 }
