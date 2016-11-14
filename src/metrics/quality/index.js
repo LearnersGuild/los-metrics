@@ -18,24 +18,24 @@ function getRepositoriesSizesAndMetrics() {
     })
     .then(({sizes, metrics}) => (
       /* eslint-disable camelcase */
-      metrics.map(({
-        name,
-        last_snapshot: {
-          gpa,
-          covered_percent: coveredPercent,
-        },
-        previous_snapshot: {
-          covered_percent: previousCoveredPercent,
-        },
-      }, i) => ({
-        name,
-        size: sizes[i].size,
-        gpa,
-        // For some reason, CodeClimate's API sometimes returns null in
-        // last_snapshot.covered_percent. :-(
-        coveredPercent: coveredPercent || previousCoveredPercent,
+      metrics.map((metric, i) => {
+        const defaultSnapshot = {
+          gpa: 0,
+          covered_percent: 0,
+        }
+        const lastSnapshot = metric.last_snapshot || defaultSnapshot
+        const previousSnapshot = metric.previous_snapshot || defaultSnapshot
+
+        return {
+          name: metric.name,
+          size: sizes[i].size,
+          gpa: lastSnapshot.gpa,
+          // For some reason, CodeClimate's API sometimes returns null in
+          // last_snapshot.covered_percent.
+          coveredPercent: lastSnapshot.covered_percent || previousSnapshot.covered_percent,
+        }
       }))
-    ))
+    )
 }
 
 function getTopLevelMetrics() {
