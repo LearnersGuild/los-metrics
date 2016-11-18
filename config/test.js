@@ -10,5 +10,19 @@ module.exports = {
     codeClimate: {
       token: 'not-a-real-token',
     },
+    keen: {
+      projects: {
+        flow: {
+          projectId: 'not-a-real-id',
+          writeKey: 'not-a-real-key',
+          readKey: 'not-a-real-key',
+        },
+        quality: {
+          projectId: 'not-a-real-id',
+          writeKey: 'not-a-real-key',
+          readKey: 'not-a-real-key',
+        },
+      },
+    },
   },
 }

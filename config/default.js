@@ -18,6 +18,21 @@ module.exports = {
       baseURL: 'https://codeclimate.com/api',
       token: process.env.CODECLIMATE_API_TOKEN,
     },
+    keen: {
+      baseURL: 'https://api.keen.io/3.0',
+      projects: {
+        flow: {
+          projectId: process.env.KEEN_API_PROJECT_ID_FLOW,
+          writeKey: process.env.KEEN_API_WRITE_KEY_FLOW,
+          readKey: process.env.KEEN_API_READ_KEY_FLOW,
+        },
+        quality: {
+          projectId: process.env.KEEN_API_PROJECT_ID_QUALITY,
+          writeKey: process.env.KEEN_API_WRITE_KEY_QUALITY,
+          readKey: process.env.KEEN_API_READ_KEY_QUALITY,
+        },
+      },
+    },
   },
   flow: {
     repos: [
