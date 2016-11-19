@@ -1,87 +1,19 @@
-/* eslint-disable no-console, camelcase */
 import config from 'config'
 
 import {table} from '../../util/presenters'
 import {mean} from '../../util/math'
+import {getReposForBoard} from '../../fetchers/zenHub'
+import {getLastEventForCollection, saveIssueMetrics} from '../../fetchers/keen'
+import {getRepo} from '../../fetchers/gitHub'
+import {cycleTimeForIssue, leadTimeForIssue} from './kanban'
 import {
-  getReposForBoard,
-  getBoardInfo,
-  getIssueEvents,
-} from '../../fetchers/zenHub'
-import {
-  getRepo,
-  getIssuesForRepo,
-} from '../../fetchers/gitHub'
-import {
-  composeIssue,
-} from './issueUtil'
-import {
-  wip as computeWip,
-  cycleTimeForIssue,
-  leadTimeForIssue,
-} from './kanban'
+  getBoardInfoForRepos,
+  getIssueDataByRepoIdSince,
+  getFlattenedFilteredComposedIssues,
+  computeWipForAllRepos,
+} from './boardUtil'
 
-function getBoardInfoForRepos(repos) {
-  const promises = repos.map(repo => getBoardInfo(repo.repo_id))
-  return Promise.all(promises)
-}
-
-function issueDataForGitHubIssue(repo) {
-  return async ghIssue => {
-    try {
-      const zhIssueEvents = await getIssueEvents(repo, ghIssue)
-      return {repo, ghIssue, zhIssueEvents}
-    } catch (err) {
-      throw err
-    }
-  }
-}
-
-async function getIssueDataByRepoIdSince(repos, since) {
-  try {
-    const promises = repos.map(repo => getIssuesForRepo(repo.cached_repo_name, {state: 'all', since: since.toISOString()}))
-    const perRepoIssues = await Promise.all(promises)
-    return perRepoIssues.reduce((curr, issues, i) => {
-      const {repo_id} = repos[i]
-      curr.set(repo_id, issues)
-      return curr
-    }, new Map())
-  } catch (err) {
-    throw err
-  }
-}
-
-async function getClosedComposedNonPRIssues(newIssuesLane, repos, ghIssuesByRepoId) {
-  try {
-    let issueDataPromises = []
-    ghIssuesByRepoId.forEach((issues, repoId) => {
-      const repo = repos.find(repo => repo.repo_id === repoId)
-      const closedNonPRIssues = issues
-        .filter(issue => Boolean(issue.closed_at) && !issue.pull_request)
-      const repoIssueDataPromises = closedNonPRIssues
-        .map(issueDataForGitHubIssue(repo))
-      issueDataPromises = issueDataPromises.concat(repoIssueDataPromises)
-    })
-    const issueDatas = await Promise.all(issueDataPromises)
-    return issueDatas.map(({repo, ghIssue, zhIssueEvents}) => (
-      composeIssue(newIssuesLane, repo, ghIssue, zhIssueEvents)
-    ))
-  } catch (err) {
-    throw err
-  }
-}
-
-function computeWipForAllRepos(wipLaneNames, repos, reposBoardInfos, ghIssuesByRepoId) {
-  return reposBoardInfos
-    .reduce((curr, boardInfo, i) => {
-      const repo = repos[i]
-      const prIssueNumbers = [...ghIssuesByRepoId.get(repo.repo_id)]
-        .filter(issue => Boolean(issue.pull_request))
-        .map(issue => issue.number)
-      return curr + computeWip(wipLaneNames, boardInfo, prIssueNumbers)
-    }, 0)
-}
-
+/* eslint-disable no-console, camelcase */
 async function computeMetricsForBoard(repoName, since) {
   try {
     const repo = await getRepo(repoName)
@@ -89,7 +21,8 @@ async function computeMetricsForBoard(repoName, since) {
     const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
     const ghIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since)
     const newIssuesLane = config.get('flow.metrics')[repoName].get('newIssuesLane')
-    const composedIssues = await getClosedComposedNonPRIssues(newIssuesLane, repos.repos, ghIssuesByRepoId)
+    const closedNonPRFilter = issue => Boolean(issue.closed_at) && !issue.pull_request
+    const composedIssues = await getFlattenedFilteredComposedIssues(newIssuesLane, repos.repos, ghIssuesByRepoId, closedNonPRFilter)
 
     const cycleTimeStartLane = config.get('flow.metrics')[repoName].get('cycleTime.startLane')
     const issueCycleTimes = composedIssues
@@ -131,15 +64,69 @@ async function displayMetrics(since) {
   }
 }
 
-export default computeMetricsForBoard
+async function saveMetricsForIssues(boardRepoName, since) {
+  const repo = await getRepo(boardRepoName)
+  const repos = await getReposForBoard(repo.id)
+  const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
+
+  const newIssuesLane = config.get('flow.metrics')[boardRepoName].get('newIssuesLane')
+  const cycleTimeStartLane = config.get('flow.metrics')[boardRepoName].get('cycleTime.startLane')
+  const leadTimeStartLane = config.get('flow.metrics')[boardRepoName].get('leadTime.startLane')
+  const closedGHIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since, 'closed')
+  const composedIssues = await getFlattenedFilteredComposedIssues(newIssuesLane, repos.repos, closedGHIssuesByRepoId)
+
+  const issuesWithMetrics = composedIssues
+    .map(composedIssue => {
+      const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
+      const cycleTime = cycleTimeForIssue(cycleTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
+      const leadTime = leadTimeForIssue(leadTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
+      return {
+        ...composedIssue,
+        boardRepoName,
+        cycleTime,
+        leadTime,
+        keen: {timestamp: composedIssue.closedAt},
+      }
+    })
+
+  const saveIssuePromises = issuesWithMetrics.map(issue => saveIssueMetrics(issue))
+  return Promise.all(saveIssuePromises)
+}
+
+async function saveMetrics() {
+  try {
+    const defaultSince = new Date()
+    defaultSince.setDate(defaultSince.getDate() - 7)
+    const reposToCompute = config.get('flow.repos')
+    const {keen} = await getLastEventForCollection('flow', 'issues')
+    const since = keen ? new Date(keen.timestamp) : defaultSince
+    const promises = reposToCompute.map(repoName => saveMetricsForIssues(repoName, since))
+    await Promise.all(promises)
+  } catch (err) {
+    throw err
+  }
+}
+
+function logErrorAndExit(err) {
+  console.error(err)
+  /* eslint-disable xo/no-process-exit */
+  process.exit(1)
+}
+
+async function run() {
+  try {
+    // display the past week's metrics
+    const displaySince = new Date()
+    displaySince.setDate(displaySince.getDate() - 7)
+    await displayMetrics(displaySince)
+
+    // save metrics for any newly-closed issues
+    await saveMetrics()
+  } catch (err) {
+    logErrorAndExit(err)
+  }
+}
 
 if (!module.parent) {
-  const since = new Date()
-  since.setDate(since.getDate() - 7)
-  displayMetrics(since)
-    .catch(err => {
-      console.error(err)
-      /* eslint-disable xo/no-process-exit */
-      process.exit(1)
-    })
+  run().then(() => process.exit(0))
 }
