@@ -1,81 +1,15 @@
 import config from 'config'
 
 import {table} from '../../util/presenters'
-import {mean} from '../../util/math'
-import {getReposForBoard} from '../../fetchers/zenHub'
-import {getAnalysis, saveEvent} from '../../fetchers/keen'
-import {getRepo} from '../../fetchers/gitHub'
-import {cycleTimeForIssue, leadTimeForIssue} from './kanban'
+import {getAnalysis} from '../../fetchers/keen'
 import {
-  getBoardInfoForRepos,
-  getIssueDataByRepoIdSince,
-  getFlattenedFilteredComposedIssues,
-  computeWipForAllRepos,
+  computeWip,
+  fetchAverage,
+  fetchThroughput,
+  saveMetricsForIssues,
 } from './boardUtil'
 
 /* eslint-disable no-console, camelcase */
-async function computeWipForBoard(repoName, since) {
-  const repo = await getRepo(repoName)
-  const repos = await getReposForBoard(repo.id)
-  const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
-  const ghIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since)
-  const wipLaneNames = config.get('flow.metrics')[repoName].get('wip.lanes')
-
-  return computeWipForAllRepos(wipLaneNames, repos.repos, reposBoardInfos, ghIssuesByRepoId)
-}
-
-async function computeWip(reposToCompute, since) {
-  const promises = reposToCompute.map(repoName => computeWipForBoard(repoName, since))
-  const wips = await Promise.all(promises)
-  return wips.map((wip, i) => ({
-    boardRepoName: reposToCompute[i],
-    result: wip
-  }))
-}
-
-async function fetchAverage(targetProperty, groupBy) {
-  const options = {
-    eventCollection: 'issues',
-    timeframe: 'this_1_month',
-    targetProperty,
-    groupBy,
-    filters: [{
-      propertyName: targetProperty,
-      operator: 'gt',
-      propertyValue: 0,
-    }, {
-      propertyName: groupBy,
-      operator: 'exists',
-      propertyValue: true,
-    }],
-  }
-
-  return getAnalysis('flow', 'average', options)
-}
-
-async function fetchThroughput(groupBy) {
-  const options = {
-    eventCollection: 'issues',
-    timeframe: 'this_7_days',
-    groupBy,
-    filters: [{
-      propertyName: 'cycleTime',
-      operator: 'gt',
-      propertyValue: 0,
-    }, {
-      propertyName: 'leadTime',
-      operator: 'gt',
-      propertyValue: 0,
-    }, {
-      propertyName: groupBy,
-      operator: 'exists',
-      propertyValue: true,
-    }],
-  }
-
-  return getAnalysis('flow', 'count', options)
-}
-
 async function displayMetrics(since) {
   const reposToCompute = config.get('flow.repos')
   const wips = await computeWip(reposToCompute, since)
@@ -92,37 +26,6 @@ async function displayMetrics(since) {
   })
 
   console.info(table(projects, {includeHeaders: true}))
-}
-
-async function saveMetricsForIssues(boardRepoName, since) {
-  const repo = await getRepo(boardRepoName)
-  const repos = await getReposForBoard(repo.id)
-  const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
-
-  const newIssuesLane = config.get('flow.metrics')[boardRepoName].get('newIssuesLane')
-  const cycleTimeStartLane = config.get('flow.metrics')[boardRepoName].get('cycleTime.startLane')
-  const leadTimeStartLane = config.get('flow.metrics')[boardRepoName].get('leadTime.startLane')
-  const closedGHIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since, 'closed')
-  const noPRs = issue => !issue.pull_request
-  const composedIssues = await getFlattenedFilteredComposedIssues(newIssuesLane, repos.repos, closedGHIssuesByRepoId, noPRs)
-
-  const issuesWithMetrics = composedIssues
-    .map(composedIssue => {
-      const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
-      const cycleTime = cycleTimeForIssue(cycleTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
-      const leadTime = leadTimeForIssue(leadTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
-      return {
-        ...composedIssue,
-        boardRepoName,
-        cycleTime,
-        leadTime,
-        _tsMillis: (new Date(composedIssue.updatedAt)).getTime(),
-        keen: {timestamp: composedIssue.updatedAt},
-      }
-    })
-
-  const saveIssuePromises = issuesWithMetrics.map(issue => saveEvent('flow', 'issues', issue))
-  return Promise.all(saveIssuePromises)
 }
 
 async function saveMetrics() {
