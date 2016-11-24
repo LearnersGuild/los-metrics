@@ -2,6 +2,7 @@ import config from 'config'
 
 import {table} from '../../util/presenters'
 import {getAnalysis, saveEvent} from '../../fetchers/keen'
+import logErrorAndExit from '../../util/logErrorAndExit'
 import {
   computeWip,
   fetchAverage,
@@ -58,12 +59,6 @@ async function saveIssueMetrics() {
   await Promise.all(promises)
 }
 
-function logErrorAndExit(err) {
-  console.error(err.stack)
-  /* eslint-disable xo/no-process-exit */
-  process.exit(1)
-}
-
 async function run() {
   try {
     // save metrics for any newly-closed issues
@@ -79,5 +74,6 @@ async function run() {
 }
 
 if (!module.parent) {
+  /* eslint-disable xo/no-process-exit */
   run().then(() => process.exit(0))
 }
