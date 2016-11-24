@@ -1,7 +1,9 @@
+import logErrorAndExit from '../../util/logErrorAndExit'
 import {weightedMean} from '../../util/math'
 import {table} from '../../util/presenters'
 import {getRepositories, getRepositoryMetrics} from '../../fetchers/codeClimate'
 import {getRepo} from '../../fetchers/gitHub'
+import {saveEvent} from '../../fetchers/keen'
 
 function getRepositoriesSizesAndMetrics() {
   return getRepositories()
@@ -60,12 +62,64 @@ function getTopLevelMetrics() {
         minCoverage: Math.min(...coverages) / 100.0,
         maxCoverage: Math.max(...coverages) / 100.0,
         weightedMeanCoverage: weightedMean(coverages, weights) / 100.0,
+        _tsMillis: (new Date()).getTime(),
       }
     })
 }
 
+function saveQualityMetrics(qualityMetrics) {
+  return saveEvent('quality', 'repoRollups', qualityMetrics)
+}
+
+async function run() {
+  try {
+    // save and display quality metrics
+    const qualityMetrics = await getTopLevelMetrics()
+    await saveQualityMetrics(qualityMetrics)
+    console.info(table(qualityMetrics, {includeHeaders: true}))
+  } catch (err) {
+    logErrorAndExit(err)
+  }
+}
+
 if (!module.parent) {
-  getTopLevelMetrics()
-    .then(metrics => console.info(table(metrics, {includeHeaders: true})))
-    .catch(err => console.error(err.stack))
+  /* eslint-disable xo/no-process-exit */
+  run().then(() => process.exit(0))
+}
+
+function _backfillQualityMetrics() {
+  const now = new Date()
+  const when = new Date(2016, 7, 1, 0, 0, 0)
+  const prevQualityMetrics = [
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.43, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 38.16},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 29.60},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 38.19},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 29.50},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 41.09},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 40.99},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 32.27},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 40.99},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.41, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 40.99},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.49, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 44.63},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.22, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 44.01},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.17, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 44.61},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.16, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 46.48},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.19, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 46.61},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.46, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 46.84},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.46, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 42.20},
+    {minGPA: 2.03, maxGPA: 4, weightedMeanGPA: 3.49, minCoverage: 0, maxCoverage: 97.03, weightedMeanCoverage: 42.04},
+  ]
+  let i = 0
+  const dailyQualityMetrics = []
+  /* eslint-disable no-unmodified-loop-condition */
+  while (when < now) {
+    const index = Math.floor(i / 7)
+    const qualityMetrics = {...prevQualityMetrics[index], _tsMillis: when.getTime(), keen: {timestamp: new Date(when)}}
+    dailyQualityMetrics.push(qualityMetrics)
+    when.setUTCDate(when.getUTCDate() + 1)
+    i += 1
+  }
+
+  const promises = dailyQualityMetrics.map(qualityMetrics => saveQualityMetrics(qualityMetrics))
+  return Promise.all(promises)
 }
