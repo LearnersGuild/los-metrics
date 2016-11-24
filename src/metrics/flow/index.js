@@ -14,54 +14,84 @@ import {
 } from './boardUtil'
 
 /* eslint-disable no-console, camelcase */
-async function computeMetricsForBoard(repoName, since) {
-  try {
-    const repo = await getRepo(repoName)
-    const repos = await getReposForBoard(repo.id)
-    const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
-    const ghIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since)
-    const newIssuesLane = config.get('flow.metrics')[repoName].get('newIssuesLane')
-    const closedNonPRFilter = issue => Boolean(issue.closed_at) && !issue.pull_request
-    const composedIssues = await getFlattenedFilteredComposedIssues(newIssuesLane, repos.repos, ghIssuesByRepoId, closedNonPRFilter)
+async function computeWipForBoard(repoName, since) {
+  const repo = await getRepo(repoName)
+  const repos = await getReposForBoard(repo.id)
+  const reposBoardInfos = await getBoardInfoForRepos(repos.repos)
+  const ghIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since)
+  const wipLaneNames = config.get('flow.metrics')[repoName].get('wip.lanes')
 
-    const cycleTimeStartLane = config.get('flow.metrics')[repoName].get('cycleTime.startLane')
-    const issueCycleTimes = composedIssues
-      .map(composedIssue => {
-        const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
-        return cycleTimeForIssue(cycleTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
-      })
-      .filter(num => num > 0)
+  return computeWipForAllRepos(wipLaneNames, repos.repos, reposBoardInfos, ghIssuesByRepoId)
+}
 
-    const leadTimeStartLane = config.get('flow.metrics')[repoName].get('leadTime.startLane')
-    const issueLeadTimes = composedIssues
-      .map(composedIssue => {
-        const boardInfoIdx = repos.repos.findIndex(repo => repo.repo_id === composedIssue.repoId)
-        return leadTimeForIssue(leadTimeStartLane, composedIssue, reposBoardInfos[boardInfoIdx])
-      })
-      .filter(num => num > 0)
+async function computeWip(reposToCompute, since) {
+  const promises = reposToCompute.map(repoName => computeWipForBoard(repoName, since))
+  const wips = await Promise.all(promises)
+  return wips.map((wip, i) => ({
+    boardRepoName: reposToCompute[i],
+    result: wip
+  }))
+}
 
-    const wipLaneNames = config.get('flow.metrics')[repoName].get('wip.lanes')
-    return {
-      project: repoName,
-      cycleTime: mean(issueCycleTimes),
-      leadTime: mean(issueLeadTimes),
-      throughput: composedIssues.length,
-      wip: computeWipForAllRepos(wipLaneNames, repos.repos, reposBoardInfos, ghIssuesByRepoId),
-    }
-  } catch (err) {
-    throw err
+async function fetchAverage(targetProperty, groupBy) {
+  const options = {
+    eventCollection: 'issues',
+    timeframe: 'this_1_month',
+    targetProperty,
+    groupBy,
+    filters: [{
+      propertyName: targetProperty,
+      operator: 'gt',
+      propertyValue: 0,
+    }, {
+      propertyName: groupBy,
+      operator: 'exists',
+      propertyValue: true,
+    }],
   }
+
+  return getAnalysis('flow', 'average', options)
+}
+
+async function fetchThroughput(groupBy) {
+  const options = {
+    eventCollection: 'issues',
+    timeframe: 'this_7_days',
+    groupBy,
+    filters: [{
+      propertyName: 'cycleTime',
+      operator: 'gt',
+      propertyValue: 0,
+    }, {
+      propertyName: 'leadTime',
+      operator: 'gt',
+      propertyValue: 0,
+    }, {
+      propertyName: groupBy,
+      operator: 'exists',
+      propertyValue: true,
+    }],
+  }
+
+  return getAnalysis('flow', 'count', options)
 }
 
 async function displayMetrics(since) {
-  try {
-    const reposToCompute = config.get('flow.repos')
-    const promises = reposToCompute.map(repoName => computeMetricsForBoard(repoName, since))
-    const projects = await Promise.all(promises)
-    console.info(table(projects, {includeHeaders: true}))
-  } catch (err) {
-    throw err
-  }
+  const reposToCompute = config.get('flow.repos')
+  const wips = await computeWip(reposToCompute, since)
+  const {result: cycleTimes} = (await fetchAverage('cycleTime', 'boardRepoName')) || {result: []}
+  const {result: leadTimes} = (await fetchAverage('leadTime', 'boardRepoName')) || {result: []}
+  const {result: throughputs} = (await fetchThroughput('boardRepoName')) || {result: []}
+
+  const projects = reposToCompute.map(repoName => {
+    const {result: cycleTime} = cycleTimes.find(_ => _.boardRepoName === repoName) || {result: undefined}
+    const {result: leadTime} = leadTimes.find(_ => _.boardRepoName === repoName) || {result: undefined}
+    const {result: throughput} = throughputs.find(_ => _.boardRepoName === repoName) || {result: undefined}
+    const {result: wip} = wips.find(_ => _.boardRepoName === repoName)
+    return {project: repoName, cycleTime, leadTime, throughput, wip}
+  })
+
+  console.info(table(projects, {includeHeaders: true}))
 }
 
 async function saveMetricsForIssues(boardRepoName, since) {
@@ -73,7 +103,8 @@ async function saveMetricsForIssues(boardRepoName, since) {
   const cycleTimeStartLane = config.get('flow.metrics')[boardRepoName].get('cycleTime.startLane')
   const leadTimeStartLane = config.get('flow.metrics')[boardRepoName].get('leadTime.startLane')
   const closedGHIssuesByRepoId = await getIssueDataByRepoIdSince(repos.repos, since, 'closed')
-  const composedIssues = await getFlattenedFilteredComposedIssues(newIssuesLane, repos.repos, closedGHIssuesByRepoId)
+  const noPRs = issue => !issue.pull_request
+  const composedIssues = await getFlattenedFilteredComposedIssues(newIssuesLane, repos.repos, closedGHIssuesByRepoId, noPRs)
 
   const issuesWithMetrics = composedIssues
     .map(composedIssue => {
@@ -85,7 +116,8 @@ async function saveMetricsForIssues(boardRepoName, since) {
         boardRepoName,
         cycleTime,
         leadTime,
-        keen: {timestamp: composedIssue.closedAt},
+        _tsMillis: (new Date(composedIssue.updatedAt)).getTime(),
+        keen: {timestamp: composedIssue.updatedAt},
       }
     })
 
@@ -94,25 +126,22 @@ async function saveMetricsForIssues(boardRepoName, since) {
 }
 
 async function saveMetrics() {
-  try {
-    const defaultSince = new Date()
-    defaultSince.setDate(defaultSince.getDate() - 7)
-    const reposToCompute = config.get('flow.repos')
-    const lastIssue = (await getAnalysis('flow', 'extraction', {
-      eventCollection: 'issues',
-      timeframe: 'this_10_years',
-      latest: 1,
-    })).result[0]
-    const since = lastIssue ? new Date(lastIssue.keen.timestamp) : defaultSince
-    const promises = reposToCompute.map(repoName => saveMetricsForIssues(repoName, since))
-    await Promise.all(promises)
-  } catch (err) {
-    throw err
-  }
+  const defaultSince = new Date()
+  defaultSince.setDate(defaultSince.getDate() - 14)
+  const reposToCompute = config.get('flow.repos')
+  const {result: maxTS} = await getAnalysis('flow', 'maximum', {
+    eventCollection: 'issues',
+    targetProperty: '_tsMillis',
+    timeframe: 'this_10_years',
+  })
+  const since = maxTS ? new Date(maxTS) : defaultSince
+  since.setUTCSeconds(since.getUTCSeconds() + 1) // add 1s to avoid getting the last issue we wrote
+  const promises = reposToCompute.map(repoName => saveMetricsForIssues(repoName, since))
+  await Promise.all(promises)
 }
 
 function logErrorAndExit(err) {
-  console.error(err)
+  console.error(err.stack)
   /* eslint-disable xo/no-process-exit */
   process.exit(1)
 }
