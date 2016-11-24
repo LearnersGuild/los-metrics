@@ -36,7 +36,8 @@ export function saveEvent(projectName, eventCollection, event) {
 export function getAnalysis(projectName, queryName, options) {
   const url = apiProjectURL(projectName, `/queries/${queryName}`)
   const headers = readHeaders(projectName)
-  const body = decamelizeKeys(options)
+  const filters = options.filters ? options.filters.map(f => decamelizeKeys(f)) : []
+  const body = {...decamelizeKeys(options), filters}
 
   return apiFetch(url, {
     method: 'POST',
