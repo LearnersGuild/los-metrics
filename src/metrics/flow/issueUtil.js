@@ -86,6 +86,7 @@ export function composeIssue(newIssuesLane, repo, ghIssue, zhIssueEvents) {
     number: ghIssue.number,
     createdAt: ghIssue.created_at,
     closedAt: ghIssue.closed_at,
+    updatedAt: ghIssue.updated_at,
     millisPerLane: millisPerLaneForIssue(newIssuesLane, ghIssue, zhIssueEvents),
     _ghIssue: ghIssue,
     _zhIssueEvents: zhIssueEvents
