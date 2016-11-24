@@ -7,7 +7,7 @@ import {
 } from '../../fetchers/codeClimate'
 import {getRepo} from '../../fetchers/gitHub'
 import {getReposForBoard} from '../../fetchers/zenHub'
-// import {saveEvent} from '../../fetchers/keen'
+import {saveEvent} from '../../fetchers/keen'
 
 /* eslint-disable camelcase */
 async function getRepositoriesSizesAndMetrics() {
@@ -59,15 +59,15 @@ async function getTopLevelMetrics() {
   }
 }
 
-// function saveQualityMetrics(qualityMetrics) {
-//   return saveEvent('quality', 'repoRollups', qualityMetrics)
-// }
+function saveQualityMetrics(qualityMetrics) {
+  return saveEvent('quality', 'repoRollups', qualityMetrics)
+}
 
 async function run() {
   try {
     // save and display quality metrics
     const qualityMetrics = await getTopLevelMetrics()
-    // await saveQualityMetrics(qualityMetrics)
+    await saveQualityMetrics(qualityMetrics)
     console.info(table(qualityMetrics, {includeHeaders: true}))
   } catch (err) {
     logErrorAndExit(err)
