@@ -59,9 +59,9 @@ function getTopLevelMetrics() {
         minGPA: Math.min(...gpas),
         maxGPA: Math.max(...gpas),
         weightedMeanGPA: weightedMean(gpas, weights),
-        minCoverage: Math.min(...coverages) / 100.0,
-        maxCoverage: Math.max(...coverages) / 100.0,
-        weightedMeanCoverage: weightedMean(coverages, weights) / 100.0,
+        minCoverage: Math.min(...coverages),
+        maxCoverage: Math.max(...coverages),
+        weightedMeanCoverage: weightedMean(coverages, weights),
         _tsMillis: (new Date()).getTime(),
       }
     })
