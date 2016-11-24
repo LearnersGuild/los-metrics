@@ -1,7 +1,7 @@
 import config from 'config'
 
 import {table} from '../../util/presenters'
-import {getAnalysis} from '../../fetchers/keen'
+import {getAnalysis, saveEvent} from '../../fetchers/keen'
 import {
   computeWip,
   fetchAverage,
@@ -9,12 +9,14 @@ import {
   saveMetricsForIssues,
 } from './boardUtil'
 
-/* eslint-disable no-console, camelcase */
-async function displayMetrics(since) {
+/* eslint-disable no-console */
+async function getProjectsMetrics(end = new Date()) {
   const reposToCompute = config.get('flow.repos')
+  const since = new Date()
+  since.setDate(since.getDate() - 7)
   const wips = await computeWip(reposToCompute, since)
-  const {result: cycleTimes} = (await fetchAverage('cycleTime', 'boardRepoName')) || {result: []}
-  const {result: leadTimes} = (await fetchAverage('leadTime', 'boardRepoName')) || {result: []}
+  const {result: cycleTimes} = (await fetchAverage('cycleTime', 'boardRepoName', end)) || {result: []}
+  const {result: leadTimes} = (await fetchAverage('leadTime', 'boardRepoName', end)) || {result: []}
   const {result: throughputs} = (await fetchThroughput('boardRepoName')) || {result: []}
 
   const projects = reposToCompute.map(repoName => {
@@ -22,15 +24,28 @@ async function displayMetrics(since) {
     const {result: leadTime} = leadTimes.find(_ => _.boardRepoName === repoName) || {result: undefined}
     const {result: throughput} = throughputs.find(_ => _.boardRepoName === repoName) || {result: undefined}
     const {result: wip} = wips.find(_ => _.boardRepoName === repoName)
-    return {project: repoName, cycleTime, leadTime, throughput, wip}
+    return {
+      project: repoName,
+      cycleTime,
+      leadTime,
+      throughput,
+      wip,
+      _tsMillis: end.getTime(),
+      keen: {timestamp: end}
+    }
   })
 
-  console.info(table(projects, {includeHeaders: true}))
+  return projects
 }
 
-async function saveMetrics() {
+function saveRollupMetrics(projects) {
+  const promises = projects.map(project => saveEvent('flow', 'issuesRollups', project))
+  return Promise.all(promises)
+}
+
+async function saveIssueMetrics() {
   const defaultSince = new Date()
-  defaultSince.setDate(defaultSince.getDate() - 14)
+  defaultSince.setUTCDate(defaultSince.getUTCDate() - 14)
   const reposToCompute = config.get('flow.repos')
   const {result: maxTS} = await getAnalysis('flow', 'maximum', {
     eventCollection: 'issues',
@@ -51,13 +66,13 @@ function logErrorAndExit(err) {
 
 async function run() {
   try {
-    // display the past week's metrics
-    const displaySince = new Date()
-    displaySince.setDate(displaySince.getDate() - 7)
-    await displayMetrics(displaySince)
-
     // save metrics for any newly-closed issues
-    await saveMetrics()
+    await saveIssueMetrics()
+
+    // save and display roll-up metrics
+    const projects = await getProjectsMetrics()
+    await saveRollupMetrics(projects)
+    console.info(table(projects, {includeHeaders: true}))
   } catch (err) {
     logErrorAndExit(err)
   }
@@ -65,4 +80,73 @@ async function run() {
 
 if (!module.parent) {
   run().then(() => process.exit(0))
+}
+
+async function _backfillRollupMetrics() {
+  const toMerge = {
+    'game-prototype': [
+      {throughput: 6, wip: 7},
+      {throughput: 6, wip: 7},
+      {throughput: 6, wip: 7},
+      {throughput: 6, wip: 7},
+      {throughput: 6, wip: 7},
+      {throughput: 4, wip: 6},
+      {throughput: 4, wip: 6},
+      {throughput: 4, wip: 6},
+      {throughput: 4, wip: 6},
+      {throughput: 4, wip: 6},
+      {throughput: 5, wip: 5},
+      {throughput: 5, wip: 5},
+      {throughput: 5, wip: 5},
+      {throughput: 5, wip: 5},
+      {throughput: 5, wip: 5},
+      {throughput: 2, wip: 10},
+      {throughput: 2, wip: 10},
+      {throughput: 2, wip: 10},
+      {throughput: 2, wip: 10},
+      {throughput: 2, wip: 10},
+      {throughput: 2, wip: 10},
+    ],
+    'game': [
+      {throughput: 10, wip: 7},
+      {throughput: 10, wip: 7},
+      {throughput: 10, wip: 7},
+      {throughput: 10, wip: 7},
+      {throughput: 10, wip: 7},
+      {throughput: 19, wip: 6},
+      {throughput: 19, wip: 6},
+      {throughput: 19, wip: 6},
+      {throughput: 19, wip: 6},
+      {throughput: 19, wip: 6},
+      {throughput: 8, wip: 12},
+      {throughput: 8, wip: 12},
+      {throughput: 8, wip: 12},
+      {throughput: 8, wip: 12},
+      {throughput: 8, wip: 12},
+      {throughput: 3, wip: 5},
+      {throughput: 3, wip: 5},
+      {throughput: 3, wip: 5},
+      {throughput: 3, wip: 5},
+      {throughput: 3, wip: 5},
+      {throughput: 3, wip: 5},
+    ]
+  }
+  const numDays = toMerge.game.length
+  const start = new Date()
+  start.setUTCDate(start.getUTCDate() - numDays)
+  const promises = Array.from(Array(numDays).keys()).map(i => {
+    const end = new Date(start)
+    end.setUTCDate(end.getUTCDate() + i)
+    return getProjectsMetrics(end)
+  })
+  const dailyProjectsMetrics = await Promise.all(promises)
+  const fullDailyProjectsMetrics = dailyProjectsMetrics.map((dm, i) => {
+    return dm.map(proj => ({...proj, ...toMerge[proj.project][i]}))
+  })
+  const flattenedMetrics = fullDailyProjectsMetrics.reduce((result, dm) => {
+    result = result.concat(dm)
+    return result
+  }, [])
+
+  await saveRollupMetrics(flattenedMetrics)
 }

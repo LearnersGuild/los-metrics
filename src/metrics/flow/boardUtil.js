@@ -15,10 +15,17 @@ export async function computeWip(reposToCompute, since) {
   }))
 }
 
-export function fetchAverage(targetProperty, groupBy) {
+export function fetchAverage(targetProperty, groupBy, end) {
+  const eventCollection = 'issues'
+  let timeframe = 'this_30_days'
+  if (end) {
+    const start = new Date(end)
+    start.setUTCDate(start.getUTCDate() - 30)
+    timeframe = {start, end}
+  }
   const options = {
-    eventCollection: 'issues',
-    timeframe: 'this_1_month',
+    eventCollection,
+    timeframe,
     targetProperty,
     groupBy,
     filters: [{
@@ -36,9 +43,11 @@ export function fetchAverage(targetProperty, groupBy) {
 }
 
 export function fetchThroughput(groupBy) {
+  const eventCollection = 'issues'
+  const timeframe = 'this_7_days'
   const options = {
-    eventCollection: 'issues',
-    timeframe: 'this_7_days',
+    eventCollection,
+    timeframe,
     groupBy,
     filters: [{
       propertyName: 'cycleTime',
