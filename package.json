@@ -2,7 +2,7 @@
   "name": "los-metrics",
   "version": "0.1.0",
   "description": "LOS Metrics",
-  "main": "lib/index.js",
+  "main": "app.js",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/LearnersGuild/product-metrics.git"
@@ -13,7 +13,7 @@
   },
   "scripts": {
     "build": "./node_modules/.bin/babel -d lib/ src/ --ignore __tests__",
-    "start": "npm run",
+    "start": "node app.js",
     "lint": "./node_modules/.bin/xo",
     "test:run": "NODE_ENV=test ./node_modules/.bin/babel-tape-runner '**/__tests__/*.test.js' | ./node_modules/.bin/faucet",
     "test": "npm run lint && npm run test:run",
@@ -34,6 +34,7 @@
     "config": "^1.21.0",
     "decamelize-keys": "^1.1.0",
     "dotenv": "^2.0.0",
+    "express": "^4.14.0",
     "isomorphic-fetch": "^2.2.0",
     "mkdirp": "^0.5.1",
     "parse-link-header": "^0.4.1",
