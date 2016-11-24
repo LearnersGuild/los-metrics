@@ -3,7 +3,7 @@ import config from 'config'
 import {table} from '../../util/presenters'
 import {mean} from '../../util/math'
 import {getReposForBoard} from '../../fetchers/zenHub'
-import {getLastEventForCollection, saveIssueMetrics} from '../../fetchers/keen'
+import {getAnalysis, saveEvent} from '../../fetchers/keen'
 import {getRepo} from '../../fetchers/gitHub'
 import {cycleTimeForIssue, leadTimeForIssue} from './kanban'
 import {
@@ -89,7 +89,7 @@ async function saveMetricsForIssues(boardRepoName, since) {
       }
     })
 
-  const saveIssuePromises = issuesWithMetrics.map(issue => saveIssueMetrics(issue))
+  const saveIssuePromises = issuesWithMetrics.map(issue => saveEvent('flow', 'issues', issue))
   return Promise.all(saveIssuePromises)
 }
 
@@ -98,8 +98,12 @@ async function saveMetrics() {
     const defaultSince = new Date()
     defaultSince.setDate(defaultSince.getDate() - 7)
     const reposToCompute = config.get('flow.repos')
-    const {keen} = await getLastEventForCollection('flow', 'issues')
-    const since = keen ? new Date(keen.timestamp) : defaultSince
+    const lastIssue = (await getAnalysis('flow', 'extraction', {
+      eventCollection: 'issues',
+      timeframe: 'this_10_years',
+      latest: 1,
+    })).result[0]
+    const since = lastIssue ? new Date(lastIssue.keen.timestamp) : defaultSince
     const promises = reposToCompute.map(repoName => saveMetricsForIssues(repoName, since))
     await Promise.all(promises)
   } catch (err) {

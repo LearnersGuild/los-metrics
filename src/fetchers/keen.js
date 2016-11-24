@@ -1,3 +1,5 @@
+import decamelizeKeys from 'decamelize-keys'
+
 import config from 'config'
 
 import {apiFetch} from '../util/apiFetch'
@@ -20,32 +22,25 @@ function apiProjectURL(projectName, path) {
   return `${config.get('api.keen.baseURL')}${projectPath}${path}`
 }
 
-/* eslint-disable camelcase */
-export function getLastEventForCollection(projectName, collectionName) {
-  const tsUrl = apiProjectURL(projectName, '/queries/extraction')
-  const headers = readHeaders(projectName)
-  const body = JSON.stringify({
-    event_collection: collectionName,
-    timeframe: 'this_10_years',  // arbitrarily long ago
-    latest: 1,
-  })
+export function saveEvent(projectName, eventCollection, event) {
+  const url = apiProjectURL(projectName, `/events/${eventCollection}`)
+  const headers = writeHeaders(projectName)
 
-  return apiFetch(tsUrl, {
+  return apiFetch(url, {
     method: 'POST',
     headers,
-    body,
+    body: JSON.stringify(event),
   })
 }
 
-export function saveIssueMetrics(issue) {
-  const projectName = 'flow'
-  const collectionName = 'issues'
-  const headers = writeHeaders(projectName)
-  const newIssueUrl = apiProjectURL(projectName, `/events/${collectionName}`)
+export function getAnalysis(projectName, queryName, options) {
+  const url = apiProjectURL(projectName, `/queries/${queryName}`)
+  const headers = readHeaders(projectName)
+  const body = decamelizeKeys(options)
 
-  return apiFetch(newIssueUrl, {
+  return apiFetch(url, {
     method: 'POST',
     headers,
-    body: JSON.stringify(issue),
+    body: JSON.stringify(body),
   })
 }

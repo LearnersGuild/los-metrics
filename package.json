@@ -32,6 +32,7 @@
   "homepage": "https://github.com/LearnersGuild/los-metrics#readme",
   "dependencies": {
     "config": "^1.21.0",
+    "decamelize-keys": "^1.1.0",
     "dotenv": "^2.0.0",
     "isomorphic-fetch": "^2.2.0",
     "mkdirp": "^0.5.1",
