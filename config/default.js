@@ -15,8 +15,9 @@ module.exports = {
       unpublishedToken: process.env.ZENHUB_API_UNPUBLISHED_TOKEN,
     },
     codeClimate: {
-      baseURL: 'https://codeclimate.com/api',
+      baseURL: 'https://api.codeclimate.com/v1',
       token: process.env.CODECLIMATE_API_TOKEN,
+      orgId: '579a4e9ae43d44008a005a41',
     },
     keen: {
       baseURL: 'https://api.keen.io/3.0',
