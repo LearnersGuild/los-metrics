@@ -82,5 +82,6 @@ module.exports = {
   },
   usability: {
     repo: 'los',
+    mongoURL: process.env.ECHO_MONGO_URL,
   },
 }

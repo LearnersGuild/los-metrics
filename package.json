@@ -45,6 +45,7 @@
     "express": "^4.14.0",
     "isomorphic-fetch": "^2.2.0",
     "mkdirp": "^0.5.1",
+    "mongodb": "^2.2.14",
     "parse-link-header": "^0.4.1",
     "query-string": "^4.2.2"
   },

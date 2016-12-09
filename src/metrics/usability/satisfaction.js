@@ -1,4 +1,5 @@
 import config from 'config'
+import {MongoClient as mongo} from 'mongodb'
 
 import {getIssuesForRepo} from '../../fetchers/gitHub'
 import {saveEvent} from '../../fetchers/keen'
@@ -31,5 +32,27 @@ export async function saveIssueMetrics() {
 }
 
 export async function saveSupportMetrics() {
-  await Promise.resolve()
+  const mongoURL = config.get('usability.mongoURL')
+  const channelName = 'support'
+  const fromDate = new Date()
+  fromDate.setUTCDate(fromDate.getUTCDate() - 1)
+
+  const db = await mongo.connect(mongoURL)
+  const [{_id: rid}] = await db.collection('rocketchat_room')
+    .find({name: channelName}, {_id: true})
+    .toArray()
+  const count = await db.collection('rocketchat_message')
+    .find({
+      rid,
+      ts: {
+        $gte: fromDate,
+      }
+    })
+    .count()
+
+  const supportMessageCount = {
+    channelName,
+    count,
+  }
+  await saveEvent('usability', 'supportMessageCounts', supportMessageCount)
 }

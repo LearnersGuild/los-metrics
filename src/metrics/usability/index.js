@@ -1,7 +1,8 @@
 import {table} from '../../util/presenters'
 import logErrorAndExit from '../../util/logErrorAndExit'
-import {saveIssueMetrics, saveSupportMetrics} from './satisfaction'
 import {getAnalysis} from '../../fetchers/keen'
+
+import {saveIssueMetrics, saveSupportMetrics} from './satisfaction'
 
 async function getUsabilityMetrics() {
   const {result: issueCountsByRepoAndLabel} = await getAnalysis('usability', 'maximum', {
@@ -11,9 +12,15 @@ async function getUsabilityMetrics() {
     groupBy: ['repoName', 'label'],
   })
 
+  const {result: supportMessageCount} = await getAnalysis('usability', 'maximum', {
+    eventCollection: 'supportMessageCounts',
+    targetProperty: 'count',
+    timeframe: 'this_1_day',
+  })
+
   return {
     issueCounts: issueCountsByRepoAndLabel.map(({repoName, label, result}) => ({repoName, label, issueCount: result})),
-    supportMessageCount: NaN,
+    supportMessageCount,
   }
 }
 
