@@ -32,6 +32,11 @@ module.exports = {
           writeKey: process.env.KEEN_API_WRITE_KEY_QUALITY,
           readKey: process.env.KEEN_API_READ_KEY_QUALITY,
         },
+        usability: {
+          projectId: process.env.KEEN_API_PROJECT_ID_USABILITY,
+          writeKey: process.env.KEEN_API_WRITE_KEY_USABILITY,
+          readKey: process.env.KEEN_API_READ_KEY_USABILITY,
+        },
       },
     },
   },
@@ -74,5 +79,9 @@ module.exports = {
         newIssuesLane: 'New Issues',
       },
     },
+  },
+  usability: {
+    repo: 'los',
+    mongoURL: process.env.ECHO_MONGO_URL,
   },
 }

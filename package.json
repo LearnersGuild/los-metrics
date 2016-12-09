@@ -19,7 +19,8 @@
     "test": "npm run lint && npm run test:run",
     "metrics": "npm run metrics:flow && npm run metrics:quality",
     "metrics:flow": "./node_modules/.bin/babel-node ./src/metrics/flow",
-    "metrics:quality": "./node_modules/.bin/babel-node ./src/metrics/quality"
+    "metrics:quality": "./node_modules/.bin/babel-node ./src/metrics/quality",
+    "metrics:usability": "./node_modules/.bin/babel-node ./src/metrics/usability"
   },
   "keywords": [
     "metrics"
@@ -44,6 +45,7 @@
     "express": "^4.14.0",
     "isomorphic-fetch": "^2.2.0",
     "mkdirp": "^0.5.1",
+    "mongodb": "^2.2.14",
     "parse-link-header": "^0.4.1",
     "query-string": "^4.2.2"
   },
