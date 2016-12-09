@@ -6,28 +6,15 @@ import {saveEvent} from '../../fetchers/keen'
 
 export async function saveIssueMetrics() {
   const repoName = config.get('usability.repo')
-  const issues = await getIssuesForRepo(repoName, {state: 'all'})
-  const countsByLabel = issues
-    .filter(issue => issue.labels.length > 0)
-    .reduce((result, issue) => {
-      issue.labels.forEach(({name: label}) => {
-        if (!result[label]) {
-          result[label] = 0
-        }
-        result[label] += 1
-      })
-      return result
-    }, {})
 
-  const writeKeenEvents = Object.keys(countsByLabel).map(label => {
-    const issueCount = {
-      label,
-      repoName,
-      count: countsByLabel[label],
-    }
-    return saveEvent('usability', 'losIssueCountsByLabel', issueCount)
-  })
+  const [openIssues, closedIssues] = await Promise.all([
+    getIssuesForRepo(repoName, {state: 'open'}),
+    getIssuesForRepo(repoName, {state: 'closed'}),
+  ])
 
+  const keenEvents = _keenIssueCountEventsFor(repoName, openIssues, 'open')
+    .concat(_keenIssueCountEventsFor(repoName, closedIssues, 'closed'))
+  const writeKeenEvents = keenEvents.map(event => saveEvent('usability', 'losIssueCountsByLabel', event))
   await Promise.all(writeKeenEvents)
 }
 
@@ -55,4 +42,27 @@ export async function saveSupportMetrics() {
     count,
   }
   await saveEvent('usability', 'supportMessageCounts', supportMessageCount)
+}
+
+function _keenIssueCountEventsFor(repoName, issues, state) {
+  const countsByLabel = issues
+    .filter(issue => issue.labels.length > 0)
+    .reduce((result, issue) => {
+      issue.labels.forEach(({name: label}) => {
+        if (!result[label]) {
+          result[label] = 0
+        }
+        result[label] += 1
+      })
+      return result
+    }, {})
+  const keenEvents = Object.keys(countsByLabel)
+    .map(label => ({
+      label,
+      repoName,
+      state,
+      count: countsByLabel[label],
+    }))
+
+  return keenEvents
 }

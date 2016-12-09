@@ -9,7 +9,7 @@ async function getUsabilityMetrics() {
     eventCollection: 'losIssueCountsByLabel',
     targetProperty: 'count',
     timeframe: 'this_1_day',
-    groupBy: ['repoName', 'label'],
+    groupBy: ['repoName', 'label', 'state'],
   })
 
   const {result: supportMessageCount} = await getAnalysis('usability', 'maximum', {
@@ -19,7 +19,12 @@ async function getUsabilityMetrics() {
   })
 
   return {
-    issueCounts: issueCountsByRepoAndLabel.map(({repoName, label, result}) => ({repoName, label, issueCount: result})),
+    issueCounts: issueCountsByRepoAndLabel.map(({repoName, label, state, result}) => ({
+      repoName,
+      label,
+      state,
+      issueCount: result
+    })),
     supportMessageCount,
   }
 }
