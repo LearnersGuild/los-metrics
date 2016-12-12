@@ -45,6 +45,10 @@ module.exports = {
       orgSlug: 'learners-guild',
     },
   },
+  server: {
+    baseURL: process.env.APP_BASE_URL,
+    port: process.env.PORT || '9006',
+  },
   flow: {
     repos: [
       'game',
