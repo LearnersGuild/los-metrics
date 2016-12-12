@@ -39,7 +39,10 @@ export function apiFetchAllPages(url, opts = {}, prevResults = []) {
         throw new APIError(resp.status, resp.statusText, url)
       }
       const link = parseLinkHeader(resp.headers.get('Link'))
-      const next = link && link.next ? link.next.url : null
+      let next = null
+      if (link && link.next) {
+        next = link.next.results && !eval(link.next.results) ? null : link.next.url // eslint-disable-line no-eval
+      }
       return resp.json()
         .then(results => {
           if (next) {
