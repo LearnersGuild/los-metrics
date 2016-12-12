@@ -39,6 +39,11 @@ module.exports = {
         },
       },
     },
+    sentry: {
+      baseURL: 'https://sentry.io/api/0',
+      token: process.env.SENTRY_API_TOKEN,
+      orgSlug: 'learners-guild',
+    },
   },
   flow: {
     repos: [
