@@ -24,5 +24,9 @@ module.exports = {
         },
       },
     },
+    sentry: {
+      token: 'not-a-real-token',
+      orgSlug: 'my-org',
+    },
   },
 }
