@@ -1,5 +1,6 @@
 module.exports = {
-  server: {
+  app: {
+    minify: true,
     secure: true,
   },
 }

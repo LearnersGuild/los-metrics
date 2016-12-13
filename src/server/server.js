@@ -13,7 +13,7 @@ const httpServer = http.createServer(app)
 configureServer(app)
 
 app.use(cookieParser())
-if (config.server.secure) {
+if (config.app.secure) {
   /* eslint new-cap: [2, {"capIsNewExceptions": ["HTTPS"]}] */
   app.use(https({trustProtoHeader: true}))
 }
@@ -22,10 +22,10 @@ configureAuth(app)
 
 app.use(express.static('public'))
 
-httpServer.listen(config.server.port, error => {
+httpServer.listen(config.app.port, error => {
   if (error) {
     console.error(error)
   } else {
-    console.info(`🌍  Listening at ${config.server.baseURL} on port ${config.server.port}`)
+    console.info(`🌍  Listening at ${config.app.baseURL} on port ${config.app.port}`)
   }
 })

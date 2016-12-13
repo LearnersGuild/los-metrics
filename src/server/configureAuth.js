@@ -20,8 +20,8 @@ export default function configureAuth(app) {
 
   app.get('/', (req, res, next) => {
     if (!req.user) {
-      const redirectTo = encodeURIComponent(config.server.baseURL)
-      return res.redirect(`${config.server.idmBaseURL}/sign-in?redirect=${redirectTo}`)
+      const redirectTo = encodeURIComponent(config.app.baseURL)
+      return res.redirect(`${config.app.idmBaseURL}/sign-in?redirect=${redirectTo}`)
     } else if (!req.user.roles.includes('staff')) {
       const forbidden = '403 Forbidden'
       res.send(`<!doctype html><html><head><title>${forbidden}</title><body><h1>${forbidden}</h1></body></html>`)

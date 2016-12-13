@@ -4,6 +4,14 @@ require('dotenv').config({
 })
 
 module.exports = {
+  app: {
+    baseURL: process.env.APP_BASE_URL,
+    port: process.env.PORT || '9006',
+    hotReload: false,
+    minify: false,
+    secure: false,
+    idmBaseURL: process.env.IDM_BASE_URL,
+  },
   api: {
     gitHub: {
       baseURL: 'https://api.github.com',
@@ -49,13 +57,6 @@ module.exports = {
       token: process.env.SENTRY_API_TOKEN,
       orgSlug: 'learners-guild',
     },
-  },
-  server: {
-    baseURL: process.env.APP_BASE_URL,
-    port: process.env.PORT || '9006',
-    hotReload: false,
-    secure: false,
-    idmBaseURL: process.env.IDM_BASE_URL,
   },
   flow: {
     repos: [

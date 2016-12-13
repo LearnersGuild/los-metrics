@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react'
-import keen from 'keen-js'
-import KeenChart from 'react-keenio'
+import Keen from 'keen-js'
 
+import KeenChart from './KeenChart'
 import config from './config'
+import styles from './index.css'
 
 export default class Charts extends Component {
   render() {
@@ -60,7 +61,7 @@ const ChartSection = props => {
   })
 
   return (
-    <div>
+    <div className={styles.section}>
       <h2>{config.sections[id].title}</h2>
       <div>
         {chartComponents}
@@ -76,7 +77,6 @@ ChartSection.propTypes = {
 
 function _getRenderChart(section, chartName, key) {
   return props => {
-    console.log({props})
     const client = new Keen(config.api.keen.projects[section])
     const {analysisType, arguments: args} = config.sections[section].charts[chartName].query
     const query = new Keen.Query(analysisType, args)

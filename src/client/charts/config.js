@@ -27,18 +27,18 @@ const config = {
       chartOptions: {
         legend: {position: 'bottom'},
         interpolateNulls: true,
+        colors: [
+          'orange',
+          'teal',
+          'silver',
+          'green',
+          'red',
+          'brown',
+          'blue',
+        ],
+        width: '100%',
+        height: 240,
       },
-      colors: [
-        'orange',
-        'teal',
-        'silver',
-        'green',
-        'red',
-        'brown',
-        'blue',
-      ],
-      width: 800,
-      height: 240,
       labelMapping: {
         'game-prototype': 'design',
         'game': 'implementation',
@@ -53,7 +53,9 @@ const config = {
         cycleTime: {
           options: {
             chartType: 'linechart',
-            title: 'Cycle Time (past 90 days, rolling average)',
+            chartOptions: {
+              title: 'Cycle Time (past 90 days, rolling average)',
+            },
           },
           query: {
             analysisType: 'average',
@@ -71,7 +73,9 @@ const config = {
         leadTime: {
           options: {
             chartType: 'linechart',
-            title: 'Lead Time (past 90 days, rolling average)',
+            chartOptions: {
+              title: 'Lead Time (past 90 days, rolling average)',
+            },
           },
           query: {
             analysisType: 'average',
@@ -89,7 +93,9 @@ const config = {
         throughput: {
           options: {
             chartType: 'linechart',
-            title: 'Throughput (past 90 days)',
+            chartOptions: {
+              title: 'Throughput (past 90 days)',              
+            },
           },
           query: {
             analysisType: 'count',
@@ -115,7 +121,9 @@ const config = {
         wip: {
           options: {
             chartType: 'linechart',
-            title: 'WIP (past 90 days, rolling average)',
+            chartOptions: {
+              title: 'WIP (past 90 days, rolling average)',
+            },
           },
           query: {
             analysisType: 'average',
@@ -138,7 +146,9 @@ const config = {
         gpa: {
           options: {
             chartType: 'areachart',
-            title: 'GPA (past 90 days, weighted mean)',
+            chartOptions: {
+              title: 'GPA (past 90 days, weighted mean)',
+            },
           },
           query: {
             analysisType: 'average',
@@ -153,7 +163,9 @@ const config = {
         coverage: {
           options: {
             chartType: 'areachart',
-            title: 'Test Coverage (past 90 days, weighted mean)',
+            chartOptions: {
+              title: 'Test Coverage (past 90 days, weighted mean)',
+            },
           },
           query: {
             analysisType: 'average',
@@ -173,8 +185,8 @@ const config = {
         qualityPerAuthor: {
           options: {
             chartType: 'columnchart',
-            title: 'Code Quality (past 90 days, average, per author)',
             chartOptions: {
+              title: 'Code Quality (past 90 days, average, per author)',
               legend: {
                 position: 'none',
               },
@@ -195,8 +207,8 @@ const config = {
         overallQuality: {
           options: {
             chartType: 'areachart',
-            title: 'Code Quality (past 90 days, average)',
             chartOptions: {
+              title: 'Code Quality (past 90 days, average)',
               legend: {
                 position: 'none',
               },
@@ -220,8 +232,8 @@ const config = {
         supportMessageCounts: {
           options: {
             chartType: 'linechart',
-            title: '#support Messages (past 90 days)',
             chartOptions: {
+              title: '#support Messages (past 90 days)',
               legend: {
                 position: 'none',
               },
@@ -240,7 +252,9 @@ const config = {
         openIssueCounts: {
           options: {
             chartType: 'linechart',
-            title: 'Open Issues (past 90 days, per label)',
+            chartOptions: {
+              title: 'Open Issues (past 90 days, per label)',
+            },
           },
           query: {
             analysisType: 'maximum',
@@ -263,7 +277,9 @@ const config = {
         closedIssueCounts: {
           options: {
             chartType: 'linechart',
-            title: 'Closed Issues (past 90 days, per label)',
+            chartOptions: {
+              title: 'Closed Issues (past 90 days, per label)',
+            },
           },
           query: {
             analysisType: 'maximum',
@@ -286,7 +302,9 @@ const config = {
         unresolvedErrorCounts: {
           options: {
             chartType: 'linechart',
-            title: 'Unresolved Errors (past 90 days, per service)',
+            chartOptions: {
+              title: 'Unresolved Errors (past 90 days, per service)',
+            },
           },
           query: {
             analysisType: 'maximum',
@@ -309,7 +327,9 @@ const config = {
         resolvedErrorCounts: {
           options: {
             chartType: 'linechart',
-            title: 'Resolved Errors (past 90 days, per service)',
+            chartOptions: {
+              title: 'Resolved Errors (past 90 days, per service)',
+            },
           },
           query: {
             analysisType: 'maximum',

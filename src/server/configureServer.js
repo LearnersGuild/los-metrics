@@ -1,7 +1,7 @@
 import config from 'config'
 
 export default function configureServer(app) {
-  if (config.server.hotReload) {
+  if (config.app.hotReload) {
     const webpack = require('webpack')
     const devMiddleware = require('webpack-dev-middleware')
     const hotMiddleware = require('webpack-hot-middleware')

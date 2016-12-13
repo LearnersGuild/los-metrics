@@ -1,5 +1,5 @@
 module.exports = {
-  server: {
+  app: {
     hotReload: true,
   },
 }
