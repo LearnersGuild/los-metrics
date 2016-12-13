@@ -80,7 +80,7 @@ function _getRenderChart(section, chartName, key) {
     const client = new Keen(config.api.keen.projects[section])
     const {analysisType, arguments: args} = config.sections[section].charts[chartName].query
     const query = new Keen.Query(analysisType, args)
-    const mergedChartOptions = {...config.charts.defaultOptions.chartOptions, ...props.chartOptions}
+    const mergedChartOptions = {...config.charts.defaultOptions.chartOptions, ...props.chartOptions} // eslint-disable-line react/prop-types
     const mergedOptions = {...config.charts.defaultOptions, ...props, chartOptions: mergedChartOptions}
 
     return (

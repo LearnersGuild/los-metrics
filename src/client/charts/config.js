@@ -46,6 +46,7 @@ const config = {
     },
   },
 
+  /* eslint-disable camelcase */
   sections: {
     flow: {
       title: 'Flow / Productivity',
@@ -94,7 +95,7 @@ const config = {
           options: {
             chartType: 'linechart',
             chartOptions: {
-              title: 'Throughput (past 90 days)',              
+              title: 'Throughput (past 90 days)',
             },
           },
           query: {

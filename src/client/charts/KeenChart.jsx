@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 
 import Keen from 'keen-js'
 
-export default class KeenChart extends React.Component {
+export default class KeenChart extends Component {
   constructor(props) {
     super(props)
     this.initChart = this.initChart.bind(this)
@@ -16,7 +16,7 @@ export default class KeenChart extends React.Component {
       .prepare()
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.initChart()
 
     this.props.client.run(this.props.query, (err, res) => {
@@ -33,8 +33,13 @@ export default class KeenChart extends React.Component {
     })
   }
 
-  render(){
-    return(<div ref={(c) => this._chartRef = c}></div>);
+  render() {
+    const ref = c => {
+      this._chartRef = c
+    }
+    return (
+      <div ref={ref}/>
+    )
   }
 }
 

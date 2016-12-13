@@ -1,3 +1,4 @@
+/* global document */
 import React from 'react'
 import {render} from 'react-dom'
 import {AppContainer} from 'react-hot-loader'
@@ -17,6 +18,7 @@ Keen.ready(() => {
 if (module.hot) {
   module.hot.accept('./Root', () => {
     const NextRoot = require('./Root').default
+
     render(
       <AppContainer><NextRoot/></AppContainer>,
       rootEl

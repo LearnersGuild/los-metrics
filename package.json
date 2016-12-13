@@ -14,6 +14,7 @@
   "scripts": {
     "build": "mkdir -p ./public && webpack --config config/webpack.js",
     "start": "node src/server",
+    "postinstall": "npm run build",
     "lint": "./node_modules/.bin/xo",
     "test:run": "NODE_ENV=test ./node_modules/.bin/babel-tape-runner '**/__tests__/*.test.js' | ./node_modules/.bin/faucet",
     "test": "npm run lint && npm run test:run",
@@ -67,6 +68,9 @@
   },
   "devDependencies": {
     "blue-tape": "^0.2.0",
+    "eslint": "^3.12.1",
+    "eslint-config-xo-react": "^0.10.0",
+    "eslint-plugin-react": "^6.8.0",
     "faucet": "0.0.1",
     "nock": "^8.0.0",
     "tape": "^4.6.0",
@@ -90,8 +94,10 @@
     }
   },
   "xo": {
+    "extends": "xo-react",
     "ignore": [
-      "lib/**/*"
+      "lib/**/*",
+      "public/app.js"
     ],
     "rules": {
       "comma-dangle": [
