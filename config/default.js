@@ -37,6 +37,11 @@ module.exports = {
           writeKey: process.env.KEEN_API_WRITE_KEY_USABILITY,
           readKey: process.env.KEEN_API_READ_KEY_USABILITY,
         },
+        sentiment: {
+          projectId: process.env.KEEN_API_PROJECT_ID_SENTIMENT,
+          writeKey: process.env.KEEN_API_WRITE_KEY_SENTIMENT,
+          readKey: process.env.KEEN_API_READ_KEY_SENTIMENT,
+        },
       },
     },
     sentry: {

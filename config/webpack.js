@@ -25,6 +25,21 @@ module.exports = {
   },
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.DefinePlugin({
+      'process.env': {
+        NODE_ENV: JSON.stringify(process.env.NODE_ENV),
+        APP_BASE_URL: JSON.stringify(config.server.baseURL),
+        IDM_BASE_URL: JSON.stringify(config.server.idmBaseURL),
+        KEEN_API_PROJECT_ID_FLOW: JSON.stringify(config.api.keen.projects.flow.projectId),
+        KEEN_API_READ_KEY_FLOW: JSON.stringify(config.api.keen.projects.flow.readKey),
+        KEEN_API_PROJECT_ID_QUALITY: JSON.stringify(config.api.keen.projects.quality.projectId),
+        KEEN_API_READ_KEY_QUALITY: JSON.stringify(config.api.keen.projects.quality.readKey),
+        KEEN_API_PROJECT_ID_USABILITY: JSON.stringify(config.api.keen.projects.usability.projectId),
+        KEEN_API_READ_KEY_USABILITY: JSON.stringify(config.api.keen.projects.usability.readKey),
+        KEEN_API_PROJECT_ID_SENTIMENT: JSON.stringify(config.api.keen.projects.sentiment.projectId),
+        KEEN_API_READ_KEY_SENTIMENT: JSON.stringify(config.api.keen.projects.sentiment.readKey),
+      },
+    }),
   ],
   resolve: {
     alias: {
