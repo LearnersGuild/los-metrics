@@ -39,10 +39,6 @@ const config = {
         width: '100%',
         height: 240,
       },
-      labelMapping: {
-        'game-prototype': 'design',
-        'game': 'implementation',
-      },
     },
   },
 
@@ -56,6 +52,10 @@ const config = {
             chartType: 'linechart',
             chartOptions: {
               title: 'Cycle Time (past 90 days, rolling average)',
+            },
+            labelMapping: {
+              'game-prototype': 'design',
+              'game': 'implementation',
             },
           },
           query: {
@@ -77,6 +77,10 @@ const config = {
             chartOptions: {
               title: 'Lead Time (past 90 days, rolling average)',
             },
+            labelMapping: {
+              'game-prototype': 'design',
+              'game': 'implementation',
+            },
           },
           query: {
             analysisType: 'average',
@@ -96,6 +100,10 @@ const config = {
             chartType: 'linechart',
             chartOptions: {
               title: 'Throughput (past 90 days)',
+            },
+            labelMapping: {
+              'game-prototype': 'design',
+              'game': 'implementation',
             },
           },
           query: {
@@ -124,6 +132,10 @@ const config = {
             chartType: 'linechart',
             chartOptions: {
               title: 'WIP (past 90 days, rolling average)',
+            },
+            labelMapping: {
+              'game-prototype': 'design',
+              'game': 'implementation',
             },
           },
           query: {
