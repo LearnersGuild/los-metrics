@@ -48,7 +48,9 @@ module.exports = {
   server: {
     baseURL: process.env.APP_BASE_URL,
     port: process.env.PORT || '9006',
-    hotReload: process.env.NODE_ENV === 'development',
+    hotReload: false,
+    secure: false,
+    idmBaseURL: process.env.IDM_BASE_URL,
   },
   flow: {
     repos: [
