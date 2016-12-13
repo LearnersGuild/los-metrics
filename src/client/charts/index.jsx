@@ -7,6 +7,27 @@ import config from './config'
 export default class Charts extends Component {
   render() {
     const sections = [{
+      id: 'usability',
+      charts: [
+        'supportMessageCounts',
+        'openIssueCounts',
+        'closedIssueCounts',
+        'unresolvedErrorCounts',
+        'resolvedErrorCounts',
+      ],
+    }, {
+      id: 'quality',
+      charts: [
+        'gpa',
+        'coverage',
+      ],
+    }, {
+      id: 'sentiment',
+      charts: [
+        'qualityPerAuthor',
+        'overallQuality',
+      ],
+    }, {
       id: 'flow',
       charts: [
         'throughput',
@@ -59,9 +80,11 @@ function _getRenderChart(section, chartName, key) {
     const client = new Keen(config.api.keen.projects[section])
     const {analysisType, arguments: args} = config.sections[section].charts[chartName].query
     const query = new Keen.Query(analysisType, args)
+    const mergedChartOptions = {...config.charts.defaultOptions.chartOptions, ...props.chartOptions}
+    const mergedOptions = {...config.charts.defaultOptions, ...props, chartOptions: mergedChartOptions}
 
     return (
-      <KeenChart key={key} client={client} query={query} {...config.charts.defaultOptions} {...props}/>
+      <KeenChart key={key} client={client} query={query} {...mergedOptions}/>
     )
   }
 }

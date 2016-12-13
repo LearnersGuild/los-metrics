@@ -26,6 +26,7 @@ const config = {
     defaultOptions: {
       chartOptions: {
         legend: {position: 'bottom'},
+        interpolateNulls: true,
       },
       colors: [
         'orange',
@@ -133,12 +134,202 @@ const config = {
     },
     quality: {
       title: 'Code Quality',
+      charts: {
+        gpa: {
+          options: {
+            chartType: 'areachart',
+            title: 'GPA (past 90 days, weighted mean)',
+          },
+          query: {
+            analysisType: 'average',
+            arguments: {
+              eventCollection: 'repoRollups',
+              targetProperty: 'weightedMeanGPA',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+            },
+          },
+        },
+        coverage: {
+          options: {
+            chartType: 'areachart',
+            title: 'Test Coverage (past 90 days, weighted mean)',
+          },
+          query: {
+            analysisType: 'average',
+            arguments: {
+              eventCollection: 'repoRollups',
+              targetProperty: 'weightedMeanCoverage',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+            },
+          },
+        },
+      },
     },
     sentiment: {
       title: 'Code Sentiment',
+      charts: {
+        qualityPerAuthor: {
+          options: {
+            chartType: 'columnchart',
+            title: 'Code Quality (past 90 days, average, per author)',
+            chartOptions: {
+              legend: {
+                position: 'none',
+              },
+            },
+          },
+          query: {
+            analysisType: 'average',
+            arguments: {
+              eventCollection: 'losSentimentReviewerSurveys',
+              targetProperty: 'quality',
+              timeframe: 'this_90_days',
+              groupBy: [
+                'author'
+              ],
+            },
+          },
+        },
+        overallQuality: {
+          options: {
+            chartType: 'areachart',
+            title: 'Code Quality (past 90 days, average)',
+            chartOptions: {
+              legend: {
+                position: 'none',
+              },
+            },
+          },
+          query: {
+            analysisType: 'average',
+            arguments: {
+              eventCollection: 'losSentimentAuthorSurveys',
+              targetProperty: 'quality',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+            },
+          },
+        },
+      },
     },
     usability: {
       title: 'Usability',
+      charts: {
+        supportMessageCounts: {
+          options: {
+            chartType: 'linechart',
+            title: '#support Messages (past 90 days)',
+            chartOptions: {
+              legend: {
+                position: 'none',
+              },
+            },
+          },
+          query: {
+            analysisType: 'maximum',
+            arguments: {
+              eventCollection: 'supportMessageCounts',
+              targetProperty: 'count',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+            },
+          },
+        },
+        openIssueCounts: {
+          options: {
+            chartType: 'linechart',
+            title: 'Open Issues (past 90 days, per label)',
+          },
+          query: {
+            analysisType: 'maximum',
+            arguments: {
+              eventCollection: 'losIssueCountsByLabel',
+              targetProperty: 'count',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+              filters: [{
+                operator: 'eq',
+                property_name: 'state',
+                property_value: 'open',
+              }],
+              groupBy: [
+                'label',
+              ],
+            },
+          },
+        },
+        closedIssueCounts: {
+          options: {
+            chartType: 'linechart',
+            title: 'Closed Issues (past 90 days, per label)',
+          },
+          query: {
+            analysisType: 'maximum',
+            arguments: {
+              eventCollection: 'losIssueCountsByLabel',
+              targetProperty: 'count',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+              filters: [{
+                operator: 'eq',
+                property_name: 'state',
+                property_value: 'closed',
+              }],
+              groupBy: [
+                'label',
+              ],
+            },
+          },
+        },
+        unresolvedErrorCounts: {
+          options: {
+            chartType: 'linechart',
+            title: 'Unresolved Errors (past 90 days, per service)',
+          },
+          query: {
+            analysisType: 'maximum',
+            arguments: {
+              eventCollection: 'losErrorCountsByProject',
+              targetProperty: 'count',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+              filters: [{
+                operator: 'eq',
+                property_name: 'status',
+                property_value: 'unresolved',
+              }],
+              groupBy: [
+                'projectSlug',
+              ],
+            },
+          },
+        },
+        resolvedErrorCounts: {
+          options: {
+            chartType: 'linechart',
+            title: 'Resolved Errors (past 90 days, per service)',
+          },
+          query: {
+            analysisType: 'maximum',
+            arguments: {
+              eventCollection: 'losErrorCountsByProject',
+              targetProperty: 'count',
+              timeframe: 'this_90_days',
+              interval: 'daily',
+              filters: [{
+                operator: 'eq',
+                property_name: 'status',
+                property_value: 'resolved',
+              }],
+              groupBy: [
+                'projectSlug',
+              ],
+            },
+          },
+        },
+      },
     },
   },
 }
