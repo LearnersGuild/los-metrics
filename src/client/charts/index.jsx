@@ -28,6 +28,7 @@ export default class Charts extends Component {
         'qualityPerAuthor',
         'overallQuality',
       ],
+/* // REMOVED until implemented on top of Clubhouse.io
     }, {
       id: 'flow',
       charts: [
@@ -36,6 +37,7 @@ export default class Charts extends Component {
         'leadTime',
         'wip',
       ],
+*/
     }]
     const sectionComponents = sections.map(section => (
       <ChartSection
