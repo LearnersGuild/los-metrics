@@ -100,8 +100,6 @@ module.exports = {
   },
   quality: {
     repos: [
-      'brand',
-      'echo-chat',
       'game',
       'game-cli',
       'graphiql',

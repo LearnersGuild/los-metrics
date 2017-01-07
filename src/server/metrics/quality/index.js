@@ -16,18 +16,13 @@ async function getRepositoriesSizesAndMetrics() {
   const reposInfos = await Promise.all(ghRepos.map(repo => getRepositoryInfo(repo.full_name)))
   const reposTestReports = await Promise.all(reposInfos.map(info => getRepositoryTestReports(info.data[0].id)))
 
-  const names = repos.map(repo => repo.name)
   const sizes = ghRepos.map(repo => repo.size)
   const gpas = reposInfos.map(info => info.data[0].attributes.score)
   const coveredPercents = reposTestReports.map(repo => repo.data[0].attributes.covered_percent)
 
-  const sizesAndMetrics = names.map((name, i) => ({
+  const sizesAndMetrics = repos.map((name, i) => ({
     name,
-    // Because the size of the echo-chat repository is so HUGE, and because
-    // most of it is not our code, we'll override its size with a hardcoded
-    // estimate of 200k (from 2016-09-21, using `du -h` on the filesystem).
-    // Ugly? Yes. Better than misleading metrics? HELL yes.
-    size: name === 'echo-chat' ? 200 : sizes[i],
+    size: sizes[i],
     gpa: gpas[i],
     coveredPercent: coveredPercents[i],
   }))
