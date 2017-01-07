@@ -98,6 +98,19 @@ module.exports = {
       },
     },
   },
+  quality: {
+    repos: [
+      'brand',
+      'echo-chat',
+      'game',
+      'game-cli',
+      'graphiql',
+      'idm',
+      'idm-jwt-auth',
+      'rethinkdb-changefeed-reconnect',
+      'subcli',
+    ],
+  },
   usability: {
     repo: 'los',
     mongoURL: process.env.ECHO_MONGO_URL,

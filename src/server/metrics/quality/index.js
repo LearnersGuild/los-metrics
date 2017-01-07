@@ -1,3 +1,4 @@
+import config from 'config'
 import logErrorAndExit from '../../util/logErrorAndExit'
 import {weightedMean} from '../../util/math'
 import {table} from '../../util/presenters'
@@ -6,20 +7,13 @@ import {
   getRepositoryTestReports,
 } from '../../fetchers/codeClimate'
 import {getRepo} from '../../fetchers/gitHub'
-import {getReposForBoard} from '../../fetchers/zenHub'
 import {saveEvent} from '../../fetchers/keen'
 
 /* eslint-disable camelcase */
 async function getRepositoriesSizesAndMetrics() {
-  const repo = await getRepo('game')
-  const repos = (await getReposForBoard(repo.id)).repos
-    .map(repo => ({
-      id: repo.repo_id,
-      name: repo.cached_repo_name,
-      slug: `${repo.cached_repo_owner}/${repo.cached_repo_name}`,
-    }))
-  const ghRepos = await Promise.all(repos.map(repo => getRepo(repo.name)))
-  const reposInfos = await Promise.all(repos.map(repo => getRepositoryInfo(repo.slug)))
+  const repos = config.get('quality.repos')
+  const ghRepos = await Promise.all(repos.map(repo => getRepo(repo)))
+  const reposInfos = await Promise.all(ghRepos.map(repo => getRepositoryInfo(repo.full_name)))
   const reposTestReports = await Promise.all(reposInfos.map(info => getRepositoryTestReports(info.data[0].id)))
 
   const names = repos.map(repo => repo.name)
